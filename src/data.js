@@ -62,7 +62,8 @@ export const PRODUCTS = [
   { c: 'solar', t: 'Inverter / Solar', v: '25.6', n: '25.6V 200Ah Power Pack', cap: '200Ah', r: 'Home / Shop', w: 'On request', ch: 'Lithium', img: pics('25_6v200ah', 3) },
   { c: 'solar', t: 'Inverter / Solar', v: '51.2', n: '51.2V Inverter Battery', cap: 'On request', r: 'Commercial', w: 'On request', ch: 'Lithium' },
 ];
-export const HERO_PRODUCT = `${BASE}products/hero-60v32ah-cutout.webp`;   // transparent background
+// All product photos have a transparent background (AI cut-out) with a soft contact shadow
+export const HERO_PRODUCT = `${BASE}products/60v32ah-1-lg.webp`;
 
 export const FILTERS = [
   { f: 'all', label: 'All' },

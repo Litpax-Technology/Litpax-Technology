@@ -41,13 +41,14 @@ export default function Hero() {
         </div>
 
         <div className="stage" id="stage" aria-hidden="true">
-          <div className="hero-photo studio" id="heroPhoto" />
+          {/* Dark stage: red spotlight, perspective floor grid */}
+          <div className="hero-photo stage-dark" id="heroPhoto"><div className="stage-floor" /><div className="stage-spot" /></div>
           <div className="orbit o1" />
           <div className="orbit o2" />
-          {/* Real Litpax 60V 32Ah pack (studio photo, white blends into the panel) */}
+          {/* Real Litpax 60V 32Ah pack — AI cut-out, with a mirror reflection on the floor */}
           <div className="pack-wrap real" ref={pack}>
             <img className="hero-product" src={HERO_PRODUCT} alt="Litpax 60V 32Ah lithium-ion battery pack" width="1200" height="900" fetchpriority="high" />
-            <div className="hero-floor" />
+            <img className="hero-reflect" src={HERO_PRODUCT} alt="" aria-hidden="true" width="1200" height="900" />
           </div>
           <div className="tagc t1"><div className="ti">⚡</div><div>Charging<b>Fast charge</b></div></div>
           <div className="tagc t2"><div className="ti">◎</div><div>Protection<b>Smart BMS</b></div></div>

@@ -254,6 +254,34 @@ body.loading .sidenav{opacity:0}
   .sr-big span{font-size:64px}
 }
 
+/* ---------- AI cut-out photos (transparent background, shadow baked in) ---------- */
+.prod .pt-img, .sr-img, .sr-reflect, .pm-hero, .pm-thumb img, .sr-thumb-img img, .bf-match img { mix-blend-mode: normal }
+.sr-box::before { display: none }
+.sr-img { filter: drop-shadow(0 30px 40px rgba(14,17,22,.18)) }
+.sr-reflect { bottom: -36%; opacity: .1 }
+.bf-match img { background: radial-gradient(circle at 50% 40%, #2c3240, #161a22) }
+
+/* Hero: dark stage with spotlight, floor grid and reflection */
+.hero-photo.stage-dark { overflow: hidden; background: radial-gradient(circle at 50% 38%, #262d3b 0, #141822 55%, #0c0f15 100%);
+  box-shadow: 0 60px 120px -50px rgba(14,17,22,.7), 0 40px 90px -50px rgba(229,72,77,.45), inset 0 0 0 1px rgba(255,255,255,.06) }
+.hero-photo.stage-dark::after { display: none }
+.stage-spot { position: absolute; left: 50%; top: 40%; width: 80%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%;
+  background: radial-gradient(circle, rgba(229,72,77,.42) 0, rgba(229,72,77,.12) 38%, transparent 66%); filter: blur(8px); animation: spotPulse 6s ease-in-out infinite }
+@keyframes spotPulse { 50% { transform: translate(-50%, -50%) scale(1.08); opacity: .85 } }
+.stage-floor { position: absolute; left: -30%; right: -30%; bottom: -8%; height: 46%; transform: perspective(500px) rotateX(62deg); transform-origin: bottom;
+  background-image: linear-gradient(rgba(255,255,255,.09) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.09) 1px, transparent 1px); background-size: 46px 46px;
+  -webkit-mask-image: linear-gradient(to top, #000 0, transparent 85%); mask-image: linear-gradient(to top, #000 0, transparent 85%); animation: floorRun 4s linear infinite }
+@keyframes floorRun { to { background-position: 0 46px, 0 0 } }
+.hero .orbit { border-color: rgba(255,255,255,.1) }
+.hero .orbit.o2 { border-color: rgba(229,72,77,.45) }
+.hero-product { filter: drop-shadow(0 26px 40px rgba(0,0,0,.55)) drop-shadow(0 0 40px rgba(229,72,77,.18)) }
+.hero-reflect { position: absolute; left: 0; top: 78%; width: 100%; height: 100%; object-fit: contain; transform: scaleY(-1); opacity: .16; pointer-events: none;
+  -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 38%); mask-image: linear-gradient(to top, #000 0%, transparent 38%); animation: hoverRef 7s ease-in-out infinite }
+@keyframes hoverRef { 50% { transform: scaleY(-1) translateY(16px) } }
+@media (min-width:981px){ .pack-wrap.real { width: 540px; height: 405px; margin: -215px 0 0 -270px } }
+.pack-wrap.real::before { inset: 22% 18%; background: radial-gradient(circle, rgba(255,120,90,.28), transparent 65%) }
+.hero .tagc { background: rgba(255,255,255,.88) }
+
 /* ---------- Mobile menu ---------- */
 .mmenu{display:none}
 @media (max-width:980px){
