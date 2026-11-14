@@ -1,16 +1,28 @@
-## Hi there 👋
+# Litpax Technology — Website (React + Vite + GSAP)
 
-<!--
-**Litpax-Technology/Litpax-Technology** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+## Run on your computer
+```bash
+npm install
+npm run dev
+```
+Open http://localhost:5173
 
-Here are some ideas to get you started:
+## Make the live version (for hosting)
+```bash
+npm run build
+```
+Upload everything inside the `dist/` folder to your hosting (Hostinger `public_html`, Netlify, Vercel, GitHub Pages…).
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+## Where to change things
+| What | File |
+|---|---|
+| Products, specs, phone numbers, reviews, photos | `src/data.js` |
+| Colours & design | `src/styles/global.css` |
+| Photo-related styles | `src/styles/photos.css` |
+| Scroll animations | `src/App.jsx` |
+| Each section | `src/components/*.jsx` |
+
+## Photos
+Photos are free Unsplash images (allowed for commercial use). To use your own,
+put them in `public/images/` and change the URL in `src/data.js`, e.g.
+`hero: '/images/factory.jpg'`.
