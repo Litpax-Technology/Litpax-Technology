@@ -5,8 +5,8 @@ import { CONTACT } from '../data.js';
 const LINKS = [
   ['#applications', 'Applications'],
   ['#products', 'Products'],
+  ['#finder', 'Battery Finder'],
   ['#process', 'Process'],
-  ['#why', 'Why Litpax'],
   ['#contact', 'Contact'],
 ];
 

@@ -91,6 +91,27 @@ export const REVIEWS = [
   ['Dhruv', 'Customer', 'Quality product and also great service support.'],
 ];
 
+export const FAQ = [
+  ['What is the difference between Li-ion and LFP batteries?', 'LFP (Lithium Iron Phosphate) is a lithium chemistry known for high thermal stability and long cycle life, which makes it ideal for e-rickshaws, solar storage and medical use. Li-ion (NMC) packs are lighter for the same energy, making them a great fit for e-bikes and scooters.'],
+  ['How long does a lithium battery last compared with lead-acid?', 'Lithium batteries typically last several times longer than lead-acid and need no water topping. Actual life depends on usage, charging habits and temperature — our team will share the expected cycle life for your pack.'],
+  ['Can Litpax build a custom battery pack?', 'Yes. We engineer packs to your voltage, capacity and size requirements. Share your specs on WhatsApp or through the quote form below.'],
+  ['Which battery is right for my vehicle or home?', 'Use the Battery Finder above for a quick estimate, then talk to our team for the exact recommendation.'],
+  ['Where can I get service support?', 'Litpax has 20 service centers and 20 distributors across India, plus a dedicated service line: +91 98967 82922.'],
+  ['Do you offer dealership opportunities?', 'Yes — we are growing our distributor network across India. Tap "Apply for dealership" to get in touch with our sales team.'],
+];
+
+// Side navigation dots (id must match a section id)
+export const SECTIONS = [
+  ['top', 'Home'],
+  ['applications', 'Applications'],
+  ['process', 'Process'],
+  ['products', 'Products'],
+  ['finder', 'Battery Finder'],
+  ['why', 'Why Litpax'],
+  ['faq', 'FAQ'],
+  ['contact', 'Contact'],
+];
+
 export const STATS = [
   [200, 'Happy clients'],
   [50, 'Expert staff'],

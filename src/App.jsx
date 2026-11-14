@@ -1,6 +1,12 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Lenis from 'lenis';
+import 'lenis/dist/lenis.css';
+import BatteryFinder from './components/BatteryFinder.jsx';
+import ProductModal from './components/ProductModal.jsx';
+import Faq from './components/Faq.jsx';
+import SideNav from './components/SideNav.jsx';
 
 import Loader from './components/Loader.jsx';
 import Cursor from './components/Cursor.jsx';
@@ -23,6 +29,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function App() {
   const [filter, setFilter] = useState('all');
+  const [quick, setQuick] = useState(null);
+  const closeQuick = useCallback(() => setQuick(null), []);
   const root = useRef(null);
 
   useLayoutEffect(() => {
@@ -30,7 +38,31 @@ export default function App() {
     const q = (s) => root.current.querySelector(s);
     const qa = (s) => [...root.current.querySelectorAll(s)];
     const loader = q('#loader');
-    const endLoader = () => { loader.style.display = 'none'; document.body.classList.remove('loading'); };
+
+    // ---------- Smooth scrolling (Lenis) synced with GSAP ----------
+    let lenis = null;
+    const raf = (t) => lenis.raf(t * 1000);
+    if (!reduce) {
+      lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
+      window.__lenis = lenis;
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add(raf);
+      gsap.ticker.lagSmoothing(0);
+      lenis.stop();
+    }
+    // In-page links (#products etc.) glide smoothly
+    const onAnchor = (e) => {
+      const a = e.target.closest('a[href^="#"]');
+      if (!a || !lenis) return;
+      const id = a.getAttribute('href');
+      const el = id === '#' || id === '#top' ? 0 : document.querySelector(id);
+      if (el === null) return;
+      e.preventDefault();
+      lenis.scrollTo(el, { offset: id === '#top' || id === '#' ? 0 : -20, duration: 1.6 });
+    };
+    document.addEventListener('click', onAnchor);
+
+    const endLoader = () => { loader.style.display = 'none'; document.body.classList.remove('loading'); lenis?.start(); };
 
     // ---- Reduced motion: show everything in its final state ----
     if (reduce) {
@@ -39,7 +71,7 @@ export default function App() {
       q('#fill').style.height = '100%';
       q('#pct').textContent = '100%';
       qa('.pstep').forEach((s) => s.classList.add('on'));
-      return;
+      return () => document.removeEventListener('click', onAnchor);
     }
 
     const ctx = gsap.context(() => {
@@ -157,11 +189,39 @@ export default function App() {
       });
     }
 
+    // ---------- Spotlight glow that follows the mouse on cards ----------
+    const onSpot = (e) => {
+      const c = e.target.closest?.('.spot, .app, .cmp, .t, .why-item, .wi');
+      if (!c) return;
+      const r = c.getBoundingClientRect();
+      c.style.setProperty('--mx', `${e.clientX - r.left}px`);
+      c.style.setProperty('--my', `${e.clientY - r.top}px`);
+    };
+    // Hero glow drifts toward the mouse
+    const glowX = gsap.quickTo('#heroGlow', 'x', { duration: 1.2, ease: 'power3' });
+    const glowY = gsap.quickTo('#heroGlow', 'y', { duration: 1.2, ease: 'power3' });
+    const onGlow = (e) => { if (scrollY < innerHeight) { glowX((e.clientX / innerWidth - 0.7) * 300); glowY((e.clientY / innerHeight - 0.3) * 200); } };
+    if (matchMedia('(hover:hover) and (pointer:fine)').matches) {
+      addEventListener('mousemove', onSpot);
+      addEventListener('mousemove', onGlow);
+    }
+
+    // Section reveal for the new parts
+    const extra = gsap.context(() => {
+      gsap.from('.bf-bat', { scaleY: 0.4, opacity: 0, transformOrigin: 'bottom', duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: '.bf-result', start: 'top 80%' } });
+    }, root);
+
     const refresh = () => ScrollTrigger.refresh();
     addEventListener('load', refresh);
     document.fonts?.ready.then(refresh);
 
-    return () => { ctx.revert(); cleanups.forEach((f) => f()); removeEventListener('load', refresh); };
+    return () => {
+      ctx.revert(); extra.revert(); cleanups.forEach((f) => f());
+      removeEventListener('load', refresh);
+      removeEventListener('mousemove', onSpot); removeEventListener('mousemove', onGlow);
+      document.removeEventListener('click', onAnchor);
+      if (lenis) { gsap.ticker.remove(raf); lenis.destroy(); window.__lenis = null; }
+    };
   }, []);
 
   return (
@@ -169,6 +229,7 @@ export default function App() {
       <Loader />
       <Cursor />
       <Header />
+      <SideNav />
       <main>
         <Hero />
         <Marquee />
@@ -176,14 +237,17 @@ export default function App() {
         <Applications onPick={setFilter} />
         <ImageBand />
         <Process />
-        <Products filter={filter} setFilter={setFilter} />
+        <Products filter={filter} setFilter={setFilter} onOpen={setQuick} />
+        <BatteryFinder />
         <Why />
         <Compare />
         <Testimonials />
+        <Faq />
         <Cta />
         <Contact />
       </main>
       <Footer />
+      <ProductModal product={quick} onClose={closeQuick} />
     </div>
   );
 }

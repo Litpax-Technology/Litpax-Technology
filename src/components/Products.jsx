@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { CONTACT, FILTERS, PRODUCTS, waLink } from '../data.js';
 
-export default function Products({ filter, setFilter }) {
+export default function Products({ filter, setFilter, onOpen }) {
   const grid = useRef(null);
   const tabsRef = useRef(null);
   const [pill, setPill] = useState({ w: 0, x: 0 });
@@ -47,10 +47,12 @@ export default function Products({ filter, setFilter }) {
 
         <div className="p-grid" ref={grid}>
           {list.map((p) => (
-            <article className="prod" data-cursor="Details" key={p.n}>
+            <article className="prod spot" data-cursor="Quick view" key={p.n} onClick={() => onOpen(p)}
+              tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && onOpen(p)}>
               <div className="pt">
                 <div className="tg"><span>{p.t}</span><em>{p.ch}</em></div>
                 <div className="v">{p.v}<small>V</small></div>
+                <span className="qv">Quick view +</span>
               </div>
               <div className="pb">
                 <h3>{p.n}</h3>
@@ -60,7 +62,7 @@ export default function Products({ filter, setFilter }) {
                   <div><dt>Warranty</dt><dd>{p.w}</dd></div>
                   <div><dt>Protection</dt><dd>Smart BMS</dd></div>
                 </dl>
-                <div className="pa">
+                <div className="pa" onClick={(e) => e.stopPropagation()}>
                   <a className="q" href={waLink(`Hi Litpax, I want details & price of ${p.n}.`)} target="_blank" rel="noopener">Get price</a>
                   <a className="b" href={CONTACT.shop} target="_blank" rel="noopener">Buy</a>
                 </div>
