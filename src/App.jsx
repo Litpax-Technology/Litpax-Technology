@@ -121,6 +121,24 @@ export default function App() {
         },
       });
 
+      // ---------- Section headings: words rise out of a mask, one by one ----------
+      qa('main section:not(.hero) h2.rv').forEach((h) => {
+        if (h.dataset.split) return;
+        h.dataset.split = '1';
+        const wrap = (node) => { const o = document.createElement('span'); o.className = 'wd'; const i = document.createElement('span'); o.appendChild(i); i.appendChild(node); return o; };
+        [...h.childNodes].forEach((n) => {
+          if (n.nodeType === 3) {
+            const frag = document.createDocumentFragment();
+            n.textContent.split(/(\s+)/).forEach((t) => { if (!t) return; frag.appendChild(/^\s+$/.test(t) ? document.createTextNode(t) : wrap(document.createTextNode(t))); });
+            h.replaceChild(frag, n);
+          } else if (n.nodeType === 1 && n.tagName !== 'BR') {
+            const w = wrap(n.cloneNode(true)); h.replaceChild(w, n);
+          }
+        });
+        h.classList.remove('rv');
+        gsap.from(h.querySelectorAll('.wd > span'), { yPercent: 115, rotate: 3, duration: 1.1, stagger: 0.07, ease: 'expo.out', scrollTrigger: { trigger: h, start: 'top 88%' } });
+      });
+
       // ---------- Generic reveal ----------
       qa('.rv').forEach((el) =>
         gsap.from(el, { y: 70, opacity: 0, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 90%' } }));
