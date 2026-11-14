@@ -44,26 +44,34 @@ export const APPLICATIONS = [
 // Real Litpax product photos (optimised WebP in /public/products).
 // pics(key, count) → ['products/key-1', 'products/key-2', …]; components add -sm.webp / -lg.webp
 const BASE = import.meta.env.BASE_URL;
-const pics = (key, n) => Array.from({ length: n }, (_, i) => `${BASE}products/${key}-${i + 1}`);
+// best = the 3/4-angle shot shown first (it shows the battery's depth, not a flat front)
+const pics = (key, n, best = 1) =>
+  [best, ...Array.from({ length: n }, (_, i) => i + 1).filter((i) => i !== best)].map((i) => `${BASE}products/${key}-${i}`);
 
 // Update "On request" values with official specifications.
 export const PRODUCTS = [
-  { c: 'ebike', t: 'E-Bike / Scooter', v: '40', n: '40V 23Ah Lithium Battery', cap: '23Ah', r: 'On request', w: 'On request', ch: 'Li-ion', img: pics('40v23ah', 3) },
-  { c: 'ebike', t: 'E-Bike / Scooter', v: '48', n: '48V 27Ah Lithium Battery', cap: '27Ah', r: 'On request', w: 'On request', ch: 'Li-ion', img: pics('48v27ah', 9) },
-  { c: 'ebike', t: 'E-Bike / Scooter', v: '60', n: '60V 27Ah Lithium Battery', cap: '27Ah', r: 'On request', w: 'On request', ch: 'Li-ion', img: pics('60v27ah', 5) },
-  { c: 'ebike', t: 'E-Bike / Scooter', v: '60', n: '60V 32Ah Lithium Battery', cap: '32Ah', r: 'On request', w: 'On request', ch: 'Li-ion', img: pics('60v32ah', 5) },
-  { c: 'ebike', t: 'E-Bike / Scooter', v: '60', n: '60V 36Ah Lithium Battery', cap: '36Ah', r: 'On request', w: 'On request', ch: 'Li-ion', img: pics('60v36ah', 2) },
-  { c: 'ebike', t: 'E-Bike / Scooter', v: '74', n: '74V 27Ah Lithium Battery', cap: '27Ah', r: 'On request', w: 'On request', ch: 'Li-ion', img: pics('74v27ah', 4) },
+  { c: 'ebike', t: 'E-Bike / Scooter', v: '40', n: '40V 23Ah Lithium Battery', cap: '23Ah', r: 'On request', w: 'On request', ch: 'Li-ion', img: pics('40v23ah', 3, 3) },
+  { c: 'ebike', t: 'E-Bike / Scooter', v: '48', n: '48V 27Ah Lithium Battery', cap: '27Ah', r: 'On request', w: 'On request', ch: 'Li-ion', img: pics('48v27ah', 9, 3) },
+  { c: 'ebike', t: 'E-Bike / Scooter', v: '60', n: '60V 27Ah Lithium Battery', cap: '27Ah', r: 'On request', w: 'On request', ch: 'Li-ion', img: pics('60v27ah', 5, 3) },
+  { c: 'ebike', t: 'E-Bike / Scooter', v: '60', n: '60V 32Ah Lithium Battery', cap: '32Ah', r: 'On request', w: 'On request', ch: 'Li-ion', img: pics('60v32ah', 5, 3) },
+  { c: 'ebike', t: 'E-Bike / Scooter', v: '60', n: '60V 36Ah Lithium Battery', cap: '36Ah', r: 'On request', w: 'On request', ch: 'Li-ion', img: pics('60v36ah', 2, 2) },
+  { c: 'ebike', t: 'E-Bike / Scooter', v: '74', n: '74V 27Ah Lithium Battery', cap: '27Ah', r: 'On request', w: 'On request', ch: 'Li-ion', img: pics('74v27ah', 4, 2) },
   { c: 'erick', t: 'E-Rickshaw', v: '51.2', n: '51.2V E-Rickshaw Battery', cap: 'On request', r: 'On request', w: 'On request', ch: 'LFP' },
   { c: 'erick', t: 'E-Rickshaw', v: '60', n: '60V E-Rickshaw Battery', cap: 'On request', r: 'On request', w: 'On request', ch: 'LFP' },
-  { c: 'solar', t: 'Inverter / Solar', v: '12.8', n: '12.8V 100Ah Power Pack', cap: '100Ah', r: 'Home backup', w: 'On request', ch: 'Lithium', img: pics('12_8v100ah', 5) },
-  { c: 'solar', t: 'Inverter / Solar', v: '12.8', n: '12.8V 200Ah Power Pack', cap: '200Ah', r: 'Home backup', w: 'On request', ch: 'Lithium', img: pics('12_8v200ah', 3) },
-  { c: 'solar', t: 'Inverter / Solar', v: '25.6', n: '25.6V 100Ah Power Pack', cap: '100Ah', r: 'Home / Shop', w: 'On request', ch: 'Lithium', img: pics('25_6v100ah', 3) },
-  { c: 'solar', t: 'Inverter / Solar', v: '25.6', n: '25.6V 200Ah Power Pack', cap: '200Ah', r: 'Home / Shop', w: 'On request', ch: 'Lithium', img: pics('25_6v200ah', 3) },
+  { c: 'solar', t: 'Inverter / Solar', v: '12.8', n: '12.8V 100Ah Power Pack', cap: '100Ah', r: 'Home backup', w: 'On request', ch: 'Lithium', img: pics('12_8v100ah', 5, 2) },
+  { c: 'solar', t: 'Inverter / Solar', v: '12.8', n: '12.8V 200Ah Power Pack', cap: '200Ah', r: 'Home backup', w: 'On request', ch: 'Lithium', img: pics('12_8v200ah', 3, 3) },
+  { c: 'solar', t: 'Inverter / Solar', v: '25.6', n: '25.6V 100Ah Power Pack', cap: '100Ah', r: 'Home / Shop', w: 'On request', ch: 'Lithium', img: pics('25_6v100ah', 3, 1) },
+  { c: 'solar', t: 'Inverter / Solar', v: '25.6', n: '25.6V 200Ah Power Pack', cap: '200Ah', r: 'Home / Shop', w: 'On request', ch: 'Lithium', img: pics('25_6v200ah', 3, 3) },
   { c: 'solar', t: 'Inverter / Solar', v: '51.2', n: '51.2V Inverter Battery', cap: 'On request', r: 'Commercial', w: 'On request', ch: 'Lithium' },
 ];
 // All product photos have a transparent background (AI cut-out) with a soft contact shadow
-export const HERO_PRODUCT = `${BASE}products/60v32ah-1-lg.webp`;
+export const HERO_PRODUCT = `${BASE}products/60v32ah-3-lg.webp`;
+// Hero line-up: front EV pack + two inverter packs behind it
+export const HERO_LINEUP = {
+  front: HERO_PRODUCT,
+  left: `${BASE}products/12_8v200ah-3-lg.webp`,
+  right: `${BASE}products/25_6v100ah-1-lg.webp`,
+};
 
 export const FILTERS = [
   { f: 'all', label: 'All' },
