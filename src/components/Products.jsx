@@ -49,9 +49,17 @@ export default function Products({ filter, setFilter, onOpen }) {
           {list.map((p) => (
             <article className="prod spot" data-cursor="Quick view" key={p.n} onClick={() => onOpen(p)}
               tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && onOpen(p)}>
-              <div className="pt">
+              <div className={`pt${p.img ? ' has-img' : ''}`}>
                 <div className="tg"><span>{p.t}</span><em>{p.ch}</em></div>
-                <div className="v">{p.v}<small>V</small></div>
+                {p.img ? (
+                  <>
+                    <img className="pt-img" src={`${p.img[0]}-sm.webp`} alt={p.n} loading="lazy" decoding="async" width="640" height="480" />
+                    {p.img[1] && <img className="pt-img alt" src={`${p.img[1]}-sm.webp`} alt="" loading="lazy" decoding="async" width="640" height="480" />}
+                    <div className="v-chip">{p.v}<small>V</small>{p.cap !== 'On request' && <b>{p.cap}</b>}</div>
+                  </>
+                ) : (
+                  <div className="v">{p.v}<small>V</small></div>
+                )}
                 <span className="qv">Quick view +</span>
               </div>
               <div className="pb">

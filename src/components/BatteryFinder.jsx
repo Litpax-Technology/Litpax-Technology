@@ -1,10 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { waLink } from '../data.js';
+import { PRODUCTS, waLink } from '../data.js';
+
+// Closest real Litpax model (same application + voltage, nearest capacity) that has a photo
+function closestModel(type, v, ah) {
+  const list = PRODUCTS.filter((p) => p.img && p.c === type && Number(p.v) === Number(v) && parseFloat(p.cap));
+  if (!list.length) return null;
+  return list.reduce((best, p) => (Math.abs(parseFloat(p.cap) - ah) < Math.abs(parseFloat(best.cap) - ah) ? p : best));
+}
 
 // Rough sizing rules — an estimate only; the sales team confirms the final pack.
 const TYPES = {
-  ebike: { label: 'E-Bike / Scooter', volts: [48, 60, 74], km: [20, 150, 5, 60], whPerKm: 30 },
+  ebike: { label: 'E-Bike / Scooter', volts: [40, 48, 60, 74], km: [20, 150, 5, 60], whPerKm: 30 },
   erick: { label: 'E-Rickshaw', volts: [51.2, 60], km: [40, 160, 5, 90], whPerKm: 70 },
   solar: { label: 'Solar / Inverter' },
 };
@@ -49,6 +56,7 @@ export default function BatteryFinder() {
   }, [type, volt, km, load, hours]);
 
   const kwh = (res.v * res.ah) / 1000;
+  const match = closestModel(type, res.v, res.ah);
   const level = Math.min(1, res.ah / (type === 'solar' ? 400 : 120));
 
   // Animate the numbers whenever the result changes
@@ -124,6 +132,12 @@ export default function BatteryFinder() {
               <div><small>Energy</small><b><span ref={kwhRef}>{kwh.toFixed(2)}</span> kWh</b></div>
               <div><small>Based on</small><b>{res.detail}</b></div>
             </div>
+            {match && (
+              <div className="bf-match" key={match.n}>
+                <img src={`${match.img[0]}-sm.webp`} alt={match.n} loading="lazy" width="640" height="480" />
+                <div><small>Closest Litpax model</small><b>{match.n}</b></div>
+              </div>
+            )}
             <a className="btn btn-red magnetic" href={waLink(msg)} target="_blank" rel="noopener" data-cursor="Ask">
               Get price for this pack <span className="ar">→</span>
             </a>

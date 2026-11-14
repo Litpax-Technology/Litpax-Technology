@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { XMark } from './Logo.jsx';
-import { PHOTOS, waLink } from '../data.js';
+import { HERO_PRODUCT, waLink } from '../data.js';
 
 export default function Hero() {
   const pack = useRef(null);
@@ -42,18 +41,13 @@ export default function Hero() {
         </div>
 
         <div className="stage" id="stage" aria-hidden="true">
-          <div className="hero-photo" id="heroPhoto" style={{ backgroundImage: `url("${PHOTOS.hero}")` }} />
+          <div className="hero-photo studio" id="heroPhoto" />
           <div className="orbit o1" />
           <div className="orbit o2" />
-          <div className="pack-wrap" ref={pack}>
-            <div className="pack">
-              <div className="cap" />
-              <div className="strip" />
-              <div className="p-logo logo">Litpa<XMark size={24} /></div>
-              <div className="p-spec">LiFePO₄ · SMART BMS</div>
-              <div className="p-volt">60<small>V</small></div>
-              <div className="p-lvl"><i /><i /><i /><i /><i /></div>
-            </div>
+          {/* Real Litpax 60V 32Ah pack (studio photo, white blends into the panel) */}
+          <div className="pack-wrap real" ref={pack}>
+            <img className="hero-product" src={HERO_PRODUCT} alt="Litpax 60V 32Ah lithium-ion battery pack" width="1200" height="900" fetchpriority="high" />
+            <div className="hero-floor" />
           </div>
           <div className="tagc t1"><div className="ti">⚡</div><div>Charging<b>Fast charge</b></div></div>
           <div className="tagc t2"><div className="ti">◎</div><div>Protection<b>Smart BMS</b></div></div>
