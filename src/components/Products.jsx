@@ -1,21 +1,50 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { CONTACT, FILTERS, PRODUCTS, waLink } from '../data.js';
+import gsap from 'gsap';
+import { FILTERS, PRODUCTS, waLink } from '../data.js';
 
-// "Sticky Scroll": the big battery stays pinned on the left while the list of
-// models scrolls on the right. Whichever model reaches the middle of the
-// screen becomes the one shown on the left (smooth cross-fade).
-// On phones every model is its own card with its own photo.
-const chemName = (ch) => (ch === 'LFP' ? 'LFP (LiFePO₄)' : ch === 'Li-ion' ? 'Lithium-ion' : 'Lithium');
+// Premium "store" grid: one large featured pack, then clean equal cards.
+// Every battery sits centred on a soft studio gradient (transparent cut-outs).
+const FEATURED = '60V 32Ah Lithium Battery';
+const chem = (ch) => (ch === 'LFP' ? 'LFP' : ch === 'Li-ion' ? 'Li-ion' : 'Lithium');
+const ah = (cap) => (cap === 'On request' ? null : parseFloat(cap));
+
+function Card({ p, onOpen, big }) {
+  return (
+    <article className={`sc${big ? ' sc-big' : ''}${p.img ? '' : ' sc-noimg'}`} onClick={() => onOpen(p)} tabIndex={0}
+      onKeyDown={(e) => e.key === 'Enter' && onOpen(p)} data-cursor="View">
+      <div className="sc-top">
+        <span className="sc-cat">{p.t}</span>
+        <span className="sc-chem">{chem(p.ch)}</span>
+      </div>
+      <div className="sc-media">
+        <span className="sc-glow" />
+        {p.img
+          ? <img src={`${p.img[0]}-${big ? 'lg' : 'sm'}.webp`} alt={p.n} loading={big ? 'eager' : 'lazy'} decoding="async" width={big ? 1200 : 640} height={big ? 900 : 480} />
+          : <span className="sc-v">{p.v}<small>V</small></span>}
+      </div>
+      <div className="sc-body">
+        {big && <span className="sc-flag">Best seller</span>}
+        <h3>{p.n}</h3>
+        <div className="sc-spec"><b>{p.v}<small>V</small></b>{ah(p.cap) && <b className="r">{ah(p.cap)}<small>Ah</small></b>}</div>
+        {big && <p className="sc-desc">High-range lithium-ion pack with Smart BMS for e-scooters and e-bikes. Built and tested in Sirsa, Haryana.</p>}
+        <div className="sc-acts" onClick={(e) => e.stopPropagation()}>
+          <a className="sc-price" href={waLink(`Hi Litpax, I want details & price of ${p.n}.`)} target="_blank" rel="noopener">Get price</a>
+          <button className="sc-more" type="button" onClick={() => onOpen(p)}>Details <span>→</span></button>
+        </div>
+      </div>
+    </article>
+  );
+}
 
 export default function Products({ filter, setFilter, onOpen }) {
   const tabsRef = useRef(null);
-  const listRef = useRef(null);
+  const gridRef = useRef(null);
+  const first = useRef(true);
   const [pill, setPill] = useState({ w: 0, x: 0 });
-  const [active, setActive] = useState(0);
   const list = PRODUCTS.filter((p) => filter === 'all' || p.c === filter);
-  const p = list[Math.min(active, list.length - 1)] || list[0];
+  const featured = list.find((p) => p.n === FEATURED) || list.find((p) => p.img) || list[0];
+  const rest = list.filter((p) => p !== featured);
 
-  // Sliding pill behind the active filter tab
   useLayoutEffect(() => {
     const place = () => {
       const a = tabsRef.current?.querySelector('.tab.active');
@@ -27,30 +56,15 @@ export default function Products({ filter, setFilter, onOpen }) {
     return () => removeEventListener('resize', place);
   }, [filter]);
 
-  // The model in the middle of the screen becomes active
+  // cards glide in when the filter changes
   useEffect(() => {
-    setActive(0);
-    const items = [...(listRef.current?.querySelectorAll('.sp-item') || [])];
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.isIntersecting && setActive(+e.target.dataset.i)),
-      { rootMargin: '-48% 0px -48% 0px' }
-    );
-    items.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+    if (first.current) { first.current = false; return; }
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    gsap.fromTo(gridRef.current.children, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.05, ease: 'expo.out', clearProps: 'transform,opacity' });
   }, [filter]);
 
-  const jump = (i) => {
-    const el = listRef.current?.querySelector(`.sp-item[data-i="${i}"]`);
-    if (!el) return;
-    if (window.__lenis) window.__lenis.scrollTo(el, { offset: -innerHeight / 2 + el.offsetHeight / 2, duration: 1.2 });
-    else el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
-
-  // category headings inside the list
-  let lastCat = '';
-
   return (
-    <section className="prods sticky-pack" id="products">
+    <section className="prods store" id="products">
       <div className="wrap">
         <div className="p-head">
           <div>
@@ -65,60 +79,9 @@ export default function Products({ filter, setFilter, onOpen }) {
           </div>
         </div>
 
-        <div className="sp-grid">
-          {/* LEFT — pinned stage */}
-          <div className="sp-stage" aria-hidden="true">
-            <div className="sp-stage-in">
-              <span className="sp-ghost" key={'g' + p?.n}>{p?.v}V</span>
-              {list.map((m, i) => (
-                m.img
-                  ? <img key={m.n} className={`sp-img${i === active ? ' on' : ''}`} src={`${m.img[0]}-lg.webp`} alt="" width="1200" height="900" loading={i < 2 ? 'eager' : 'lazy'} decoding="async" />
-                  : <div key={m.n} className={`sp-img sp-noimg${i === active ? ' on' : ''}`}><b>{m.v}<small>V</small></b><span>Photo coming soon</span></div>
-              ))}
-              <div className="sp-caption" key={'c' + p?.n}>
-                <span>{p?.t}</span>
-                <b>{p?.v}<small>V</small>{p && p.cap !== 'On request' && <> · {parseFloat(p.cap)}<small>Ah</small></>}</b>
-              </div>
-              <div className="sp-progress">
-                {list.map((m, i) => <button key={m.n} className={i === active ? 'on' : ''} onClick={() => jump(i)} aria-label={m.n} tabIndex={-1} />)}
-              </div>
-            </div>
-          </div>
-
-          {/* RIGHT — scrolling list of models */}
-          <div className="sp-list" ref={listRef}>
-            {list.map((m, i) => {
-              const head = m.t !== lastCat ? (lastCat = m.t) : null;
-              return (
-                <div key={m.n}>
-                  {head && <div className="sp-cat">{head}</div>}
-                  <article className={`sp-item${i === active ? ' on' : ''}`} data-i={i}>
-                    {/* phone-only photo */}
-                    <div className="sp-mobile-img">
-                      {m.img ? <img src={`${m.img[0]}-sm.webp`} alt={m.n} loading="lazy" width="640" height="480" /> : <b>{m.v}V</b>}
-                    </div>
-                    <span className="sp-num">{String(i + 1).padStart(2, '0')}</span>
-                    <h3>{m.n}</h3>
-                    <div className="sp-big">
-                      <span>{m.v}<small>V</small></span>
-                      {m.cap !== 'On request' && <span className="ah">{parseFloat(m.cap)}<small>Ah</small></span>}
-                    </div>
-                    <dl className="sp-specs">
-                      <div><dt>Chemistry</dt><dd>{chemName(m.ch)}</dd></div>
-                      <div><dt>{m.c === 'solar' ? 'Best for' : 'Range'}</dt><dd>{m.r}</dd></div>
-                      <div><dt>Warranty</dt><dd>{m.w}</dd></div>
-                      <div><dt>Protection</dt><dd>Smart BMS</dd></div>
-                    </dl>
-                    <div className="sp-cta">
-                      <a className="btn btn-red" href={waLink(`Hi Litpax, I want details & price of ${m.n}.`)} target="_blank" rel="noopener">Get price <span className="ar">→</span></a>
-                      <button className="btn btn-glass" type="button" onClick={() => onOpen(m)}>{m.img ? 'Photos & details' : 'Details'} <span className="ar">+</span></button>
-                      <a className="sp-buy" href={CONTACT.shop} target="_blank" rel="noopener">Buy online ↗</a>
-                    </div>
-                  </article>
-                </div>
-              );
-            })}
-          </div>
+        <div className="store-grid" ref={gridRef}>
+          {featured && <Card p={featured} onOpen={onOpen} big />}
+          {rest.map((p) => <Card key={p.n} p={p} onOpen={onOpen} />)}
         </div>
         <p className="p-note">* Specifications marked "On request" will be updated with official data. Range depends on vehicle and usage.</p>
       </div>
