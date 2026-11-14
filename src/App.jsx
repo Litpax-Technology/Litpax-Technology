@@ -103,7 +103,6 @@ export default function App() {
       const heroST = { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true };
       gsap.to('#stage', { yPercent: 16, ease: 'none', scrollTrigger: heroST });
       gsap.to('.pack-wrap', { yPercent: 12, scale: 0.94, ease: 'none', scrollTrigger: heroST });
-      gsap.to('.hl-layer.back', { yPercent: -10, ease: 'none', scrollTrigger: heroST });   // back packs drift up = depth
       gsap.to('#heroGlow', { yPercent: 40, ease: 'none', scrollTrigger: heroST });
       gsap.to('.hero h1', { yPercent: -12, opacity: 0.2, ease: 'none', scrollTrigger: { ...heroST, start: '40% top' } });
 
