@@ -58,7 +58,9 @@ export default function App() {
       const el = id === '#' || id === '#top' ? 0 : document.querySelector(id);
       if (el === null) return;
       e.preventDefault();
-      lenis.scrollTo(el, { offset: id === '#top' || id === '#' ? 0 : -20, duration: 1.6 });
+      // If the mobile menu is open, wait until it has closed and scrolling is resumed
+      const fromMenu = document.body.classList.contains('menu-open');
+      setTimeout(() => lenis.scrollTo(el, { offset: id === '#top' || id === '#' ? 0 : -20, duration: 1.6, force: true }), fromMenu ? 80 : 0);
     };
     document.addEventListener('click', onAnchor);
 
