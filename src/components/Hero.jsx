@@ -36,16 +36,10 @@ export default function Hero() {
           <span className="halo-ring r1" aria-hidden="true" />
           <span className="halo-ring r2" aria-hidden="true" />
           <span className="halo-ring r3" aria-hidden="true" />
-          <span className="hero-bigtext" aria-hidden="true">60V</span>
-          {/* Real-time 3D model of the Litpax 60V 32Ah pack (drag to turn it) */}
+          {/* Only the battery: real-time 3D model, turns a full 360° (drag / flick to spin) */}
           <div className="pack-wrap model3d" ref={pack}>
             <Battery3D fallback={HERO_LINEUP.front} alt="Litpax 60V 32Ah lithium-ion battery pack, 3D model" />
-            <span className="drag-hint">Drag to rotate</span>
           </div>
-          <div className="tagc t1" aria-hidden="true"><div className="ti">⚡</div><div>Charging<b>Fast charge</b></div></div>
-          <div className="tagc t2" aria-hidden="true"><div className="ti">◎</div><div>Protection<b>Smart BMS</b></div></div>
-          <div className="tagc t3" aria-hidden="true"><div className="ti">✦</div><div>Maintenance<b>Zero</b></div></div>
-          <div className="hero-model-tag" aria-hidden="true"><b>60V · 32Ah</b><span>Lithium-ion EV pack</span></div>
         </div>
       </div>
       <div className="scroll-cue"><span />Scroll</div>
