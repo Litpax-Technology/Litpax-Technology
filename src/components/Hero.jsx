@@ -1,9 +1,25 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { HERO_LINEUP, waLink } from '../data.js';
 import Battery3D from './Battery3D.jsx';
 
+const MODELS = [
+  { tab: 'E-Bike Battery', name: '60V 32Ah Li-ion Pack' },
+  { tab: 'Solar Inverter', name: '1500W · 12V 120Ah' },
+];
+const EVERY = 7000;   // auto-switch interval (ms)
+
 export default function Hero() {
   const pack = useRef(null);
+  const [model, setModel] = useState(0);
+  const [round, setRound] = useState(0);   // restarts the timer (and its progress bar) after a click
+
+  // models take turns; each change (auto or click) starts a fresh 7 s timer
+  useEffect(() => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const id = setTimeout(() => setModel((m) => (m + 1) % MODELS.length), EVERY);
+    return () => clearTimeout(id);
+  }, [model, round]);
+  const pick = (i) => { setModel(i); setRound((r) => r + 1); };
 
   return (
     <section className="hero" id="top">
@@ -36,10 +52,20 @@ export default function Hero() {
           <span className="halo-ring r1" aria-hidden="true" />
           <span className="halo-ring r2" aria-hidden="true" />
           <span className="halo-ring r3" aria-hidden="true" />
-          {/* Only the battery: real-time 3D model, turns a full 360° (drag / flick to spin) */}
+          {/* Real-time 3D: EV battery and solar inverter take turns, full 360° (drag / flick to spin) */}
           <div className="pack-wrap model3d" ref={pack}>
-            <Battery3D fallback={HERO_LINEUP.front} alt="Litpax 60V 32Ah lithium-ion battery pack, 3D model" />
+            <Battery3D active={model} fallback={HERO_LINEUP.front} alt={`Litpax ${MODELS[model].tab}, ${MODELS[model].name}, 3D model`} />
           </div>
+          <div className="model-switch" role="tablist" aria-label="Choose product">
+            <span className="ms-pill" style={{ transform: `translateX(${model * 100}%)` }} aria-hidden="true" />
+            {MODELS.map((m, i) => (
+              <button key={m.tab} role="tab" aria-selected={model === i} className={model === i ? 'on' : ''} onClick={() => pick(i)}>
+                {m.tab}
+                {model === i && <span key={`${model}-${round}`} className="ms-bar" style={{ animationDuration: `${EVERY}ms` }} />}
+              </button>
+            ))}
+          </div>
+          <div className="model-name" key={model} aria-live="polite">{MODELS[model].name}</div>
         </div>
       </div>
       <div className="scroll-cue"><span />Scroll</div>

@@ -7,12 +7,16 @@ import { useEffect, useRef, useState } from 'react';
 // Three.js loads only when this component mounts.
 const BASE = import.meta.env.BASE_URL;
 const FRONT = `${BASE}model/label-60v32ah-hd.webp`;     // 2048px label: photo artwork + crisp vector text
+const INV_FRONT = `${BASE}model/inverter-front.webp`;   // solar inverter front panel (from the product photo)
 const LID_RATIO = 0.243;          // yellow lid share of the front photo's height
 
-export default function Battery3D({ fallback, alt }) {
+// active: 0 = EV battery, 1 = solar inverter. Changing it plays a spin-and-swap transition.
+export default function Battery3D({ fallback, alt, active = 0 }) {
   const host = useRef(null);
+  const target = useRef(active);
   const [failed, setFailed] = useState(false);
   const [ready, setReady] = useState(false);
+  useEffect(() => { target.current = active; }, [active]);
 
   useEffect(() => {
     let dispose = () => {};
@@ -22,6 +26,7 @@ export default function Battery3D({ fallback, alt }) {
         const THREE = await import('three');
         const { RoundedBoxGeometry } = await import('three/examples/jsm/geometries/RoundedBoxGeometry.js');
         const { RoomEnvironment } = await import('three/examples/jsm/environments/RoomEnvironment.js');
+        const { buildInverter } = await import('./inverterModel.js');
         if (cancelled || !host.current) return;
         const el = host.current;
         const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -145,7 +150,26 @@ export default function Battery3D({ fallback, alt }) {
         group.add(wire(0.5, '#d22b2b'), wire(0.72, '#141414'));
         group.position.y = -0.15;
         group.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
-        scene.add(group);
+
+        // second model: solar inverter, standing on the same floor
+        const invFront = await new THREE.TextureLoader().loadAsync(INV_FRONT);
+        invFront.colorSpace = THREE.SRGBColorSpace; invFront.anisotropy = aniso;
+        const inv = buildInverter(THREE, RoundedBoxGeometry, canvasTex, invFront);
+        const floorBase = group.position.y - H / 2;
+        inv.group.position.y = floorBase + inv.H / 2 + 0.05 - 0.05 / 2;
+
+        // holder turns + bobs; each model scales in/out when switching
+        const holder = new THREE.Group();
+        holder.add(group, inv.group);
+        scene.add(holder);
+        const models = [group, inv.group];
+        let cur = Math.min(target.current, 1), phase = 'idle', tp = 0;
+        models.forEach((m, i) => { m.visible = i === cur; });
+        const easeIn = (p) => p * p * p, easeOutBack = (p) => { const c = 1.6; return 1 + (c + 1) * Math.pow(p - 1, 3) + c * Math.pow(p - 1, 2); };
+        const BASE_SCALE = [1, 1.14];                     // inverter a bit larger so both read the same size on screen
+        const setScale = (m, s) => { m.scale.setScalar(Math.max(s, 0.001) * BASE_SCALE[models.indexOf(m)]); };
+        models.forEach((m) => setScale(m, 1));
+        inv.group.position.y = floorBase + (inv.H / 2 + 0.025) * BASE_SCALE[1];
 
         // floor that only shows the real shadow
         const floor = new THREE.Mesh(new THREE.CircleGeometry(2.3, 64), new THREE.ShadowMaterial({ opacity: 0.1 }));
@@ -224,14 +248,26 @@ export default function Battery3D({ fallback, alt }) {
         const io = new IntersectionObserver(([en]) => { visible = en.isIntersecting; if (visible && !raf && !reduce) loop(); }, { threshold: 0 });
         io.observe(el);
         const clock = new THREE.Clock();
+        let reduceStop = () => {};
         const loop = () => {
           raf = 0;
           if (!visible) return;
           const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime;
           if (drag === null) { ry += AUTO + vel; vel *= 0.94; }    // after a flick it keeps spinning, then settles into the slow turn
           tilt += (tiltT - tilt) * 0.05;
-          group.rotation.set(tilt, ry, 0);
-          group.position.y = -0.15 + Math.sin(t * 1.1) * 0.05;
+          holder.rotation.set(tilt, ry, 0);
+          holder.position.y = Math.sin(t * 1.1) * 0.05;
+          // model switch: shrink + spin out, swap, pop back in
+          if (phase === 'idle' && target.current !== cur) { phase = 'out'; tp = 0; vel += 0.12; }
+          if (phase !== 'idle') {
+            tp = Math.min(1, tp + dt / (phase === 'out' ? 0.42 : 0.7));
+            const m = models[cur];
+            setScale(m, phase === 'out' ? 1 - easeIn(tp) : easeOutBack(tp));
+            if (tp >= 1) {
+              if (phase === 'out') { m.visible = false; setScale(m, 1); cur = target.current; models[cur].visible = true; setScale(models[cur], 0.001); phase = 'in'; tp = 0; }
+              else phase = 'idle';
+            }
+          }
           shadow.scale.setScalar(1 - Math.sin(t * 1.1) * 0.04);
           // two energy rings pulse outwards one after the other
           [ring, ring2].forEach((r, i) => { const p = ((t * 0.35) + i * 0.5) % 1; r.scale.setScalar(0.6 + p * 0.9); r.material.opacity = 0.6 * (1 - p); });
@@ -239,11 +275,19 @@ export default function Battery3D({ fallback, alt }) {
           renderer.render(scene, camera);
           raf = requestAnimationFrame(loop);
         };
-        if (reduce) { group.rotation.y = -0.6; renderer.render(scene, camera); } else loop();
+        if (reduce) {
+          // no animation: swap instantly and draw one frame whenever the model changes
+          holder.rotation.y = -0.6; renderer.render(scene, camera);
+          const iv = setInterval(() => {
+            if (target.current === cur) return;
+            models[cur].visible = false; cur = target.current; models[cur].visible = true; renderer.render(scene, camera);
+          }, 200);
+          const prev = () => clearInterval(iv); reduceStop = prev;
+        } else loop();
         setReady(true);
 
         dispose = () => {
-          cancelAnimationFrame(raf); io.disconnect(); ro.disconnect();
+          cancelAnimationFrame(raf); io.disconnect(); ro.disconnect(); reduceStop();
           removeEventListener('mousemove', onMove); removeEventListener('pointermove', move); removeEventListener('pointerup', up); removeEventListener('pointercancel', up);
           scene.traverse((o) => { o.geometry?.dispose?.(); [].concat(o.material || []).forEach((m) => { m.map?.dispose?.(); m.dispose?.(); }); });
           pmrem.dispose(); renderer.dispose(); renderer.domElement.remove();
