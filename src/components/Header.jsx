@@ -14,11 +14,14 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
+  const [dark, setDark] = useState(true);   // header text turns white while it sits over the dark hero
 
   useEffect(() => {
     let last = 0;
     const onScroll = () => {
       const y = scrollY;
+      const hero = document.querySelector('.hero');
+      setDark(!!hero && y < hero.offsetHeight - 70);
       setScrolled(y > 40);
       setHidden(y > last && y > 500);
       last = y;
@@ -46,7 +49,7 @@ export default function Header() {
   }, []);
 
   const close = () => setOpen(false);
-  const cls = [scrolled && 'scrolled', hidden && !open && 'hide'].filter(Boolean).join(' ');
+  const cls = [scrolled && 'scrolled', hidden && !open && 'hide', dark && 'dark'].filter(Boolean).join(' ');
 
   return (
     <>
