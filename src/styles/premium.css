@@ -507,6 +507,12 @@ body.loading .sidenav{opacity:0}
 @media (max-width:980px){ .stage.open .pack-wrap.model3d{width:640px;height:520px;margin:-260px 0 0 -320px} }
 @media (max-width:640px){ .stage.open{height:440px} .stage.open .pack-wrap.model3d{width:420px;height:400px;margin:-200px 0 0 -210px} }
 
+/* ---------- Hero v5: battery sits up beside the headline (no empty space above) ---------- */
+@media (min-width:981px){
+  .hero .wrap{align-items:start}
+  .hero .stage.open{margin-top:-30px}
+}
+
 /* =========================================================
    v7 — fresh "Why Litpax" cards + premium store grid
    ========================================================= */

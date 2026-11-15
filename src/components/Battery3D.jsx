@@ -33,8 +33,9 @@ export default function Battery3D({ fallback, alt }) {
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.outputColorSpace = THREE.SRGBColorSpace;
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.05;
+        // Neutral tone mapping keeps true colours (ACES greyed out the yellow and the black)
+        renderer.toneMapping = THREE.NeutralToneMapping;
+        renderer.toneMappingExposure = 1.0;
         el.appendChild(renderer.domElement);
         const scene = new THREE.Scene();
         const pmrem = new THREE.PMREMGenerator(renderer);
@@ -87,10 +88,10 @@ export default function Battery3D({ fallback, alt }) {
           g.strokeStyle = 'rgba(0,0,0,.12)'; g.lineWidth = 6; g.strokeRect(26, 26, w - 52, h - 52);
           g.fillStyle = 'rgba(255,255,255,.2)'; g.fillRect(30, 30, w - 60, 8);
         });
-        const bodySide = canvasTex(512, 512, (g, w, h) => {                      // plain dark navy, soft vertical sheen
-          const b = g.createLinearGradient(0, 0, w, 0); b.addColorStop(0, '#1a2234'); b.addColorStop(0.5, '#222b40'); b.addColorStop(1, '#161d2c');
+        const bodySide = canvasTex(512, 512, (g, w, h) => {                      // deep piano black, faint sheen
+          const b = g.createLinearGradient(0, 0, w, 0); b.addColorStop(0, '#07080b'); b.addColorStop(0.5, '#111319'); b.addColorStop(1, '#060709');
           g.fillStyle = b; g.fillRect(0, 0, w, h);
-          const v = g.createLinearGradient(0, 0, 0, h); v.addColorStop(0, 'rgba(255,255,255,.04)'); v.addColorStop(1, 'rgba(0,0,0,.25)');
+          const v = g.createLinearGradient(0, 0, 0, h); v.addColorStop(0, 'rgba(255,255,255,.03)'); v.addColorStop(1, 'rgba(0,0,0,.3)');
           g.fillStyle = v; g.fillRect(0, 0, w, h);
         });
         const dark = canvasTex(32, 32, (g, w, h) => { g.fillStyle = '#0a0e17'; g.fillRect(0, 0, w, h); });
@@ -98,11 +99,12 @@ export default function Battery3D({ fallback, alt }) {
         // ---------- geometry (sizes from the product photos) ----------
         const W = 2, H = W / 1.1545, D = 1.45;
         const lidH = H * LID_RATIO, bodyH = H - lidH;
-        const paint = (map, rough = 0.4, coat = 0.5) => new THREE.MeshPhysicalMaterial({ map, roughness: rough, clearcoat: coat, clearcoatRoughness: 0.3 });
+        const paint = (map, rough = 0.4, coat = 0.5, coatRough = 0.3) => new THREE.MeshPhysicalMaterial({ map, roughness: rough, clearcoat: coat, clearcoatRoughness: coatRough });
+        const gloss = () => paint(bodySide, 0.22, 1, 0.06);                     // glossy black: crisp reflections, true black
         const group = new THREE.Group();
 
         const body = new THREE.Mesh(new RoundedBoxGeometry(W, bodyH, D, 10, 0.035),
-          [paint(bodySide), paint(bodySide), paint(dark), paint(dark, 0.8, 0), paint(bodyFront, 0.3, 0.9), paint(bodySide)]);
+          [gloss(), gloss(), paint(dark), paint(dark, 0.8, 0), paint(bodyFront, 0.35, 0.7, 0.1), gloss()]);
         body.position.y = -H / 2 + bodyH / 2;
         const lid = new THREE.Mesh(new RoundedBoxGeometry(W * 1.03, lidH, D * 1.04, 10, 0.035),
           [paint(lidSide, 0.38, 0.6), paint(lidSide, 0.38, 0.6), paint(lidTop, 0.36, 0.6), paint(dark, 0.8, 0), paint(lidFront, 0.36, 0.6), paint(lidSide, 0.38, 0.6)]);
@@ -201,8 +203,8 @@ export default function Battery3D({ fallback, alt }) {
           renderer.setSize(w, h, false);
           renderer.domElement.style.width = '100%'; renderer.domElement.style.height = '100%';
           camera.aspect = w / h;
-          camera.position.set(0, 1.25, w / h < 1 ? 9.2 : 8.6);
-          camera.lookAt(0, 0.2, 0);
+          camera.position.set(0, 1.2, w / h < 1 ? 8.4 : 7.6);             // closer = bigger battery
+          camera.lookAt(0, 0.3, 0);
           camera.updateProjectionMatrix();
         };
         size();
