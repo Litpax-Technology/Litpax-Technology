@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 // photos, so the pack looks right from every side.
 // Three.js loads only when this component mounts.
 const BASE = import.meta.env.BASE_URL;
-const FRONT = `${BASE}model/front-60v32ah.webp`;
+const FRONT = `${BASE}model/label-60v32ah-hd.webp`;     // 2048px label: photo artwork + crisp vector text
 const LID_RATIO = 0.243;          // yellow lid share of the front photo's height
 
 export default function Battery3D({ fallback, alt }) {
@@ -28,7 +28,10 @@ export default function Battery3D({ fallback, alt }) {
 
         // ---------- renderer / scene / camera ----------
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
-        renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+        // HD: render at least at 2x (supersampling on normal screens), capped at 2.5 for performance
+        renderer.setPixelRatio(Math.min(2.5, Math.max(2, devicePixelRatio)));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 1.05;
@@ -40,6 +43,10 @@ export default function Battery3D({ fallback, alt }) {
 
         // ---------- lights: warm key, warm rim, soft fill ----------
         const key = new THREE.DirectionalLight('#fff4e6', 2.5); key.position.set(-3, 4, 4); scene.add(key);
+        key.castShadow = true;                                   // real shadows (handle & cables on the lid, pack on the floor)
+        key.shadow.mapSize.set(2048, 2048);
+        Object.assign(key.shadow.camera, { left: -3, right: 3, top: 3, bottom: -3, near: 0.5, far: 15 });
+        key.shadow.radius = 6; key.shadow.bias = -0.0004;
         const rim = new THREE.DirectionalLight('#ff9a6b', 1.5); rim.position.set(4, 1.5, -3); scene.add(rim);
         const back = new THREE.DirectionalLight('#ffd9c2', 1.0); back.position.set(-3, 2, -4); scene.add(back);
         const fill = new THREE.DirectionalLight('#ffffff', 0.7); fill.position.set(4, 0.5, 2); scene.add(fill);
@@ -49,10 +56,12 @@ export default function Battery3D({ fallback, alt }) {
         const aniso = renderer.capabilities.getMaxAnisotropy();
         const frontSrc = await new THREE.TextureLoader().loadAsync(FRONT);
         frontSrc.colorSpace = THREE.SRGBColorSpace; frontSrc.anisotropy = aniso;
-        // body front = only the label part of the photo (the printed plug above it is left out —
-        // the plug, cap and cables are real 3D parts now)
-        const LABEL_TOP = 0.30;
-        const bodyFront = frontSrc.clone(); bodyFront.repeat.set(1, 1 - LABEL_TOP); bodyFront.offset.set(0, 0); bodyFront.needsUpdate = true;
+        // body front = the HD label. The label covers the lower 92.5% of the body face; the strip
+        // above it repeats the label's dark top edge (ClampToEdge), exactly like the real pack.
+        const bodyFront = frontSrc;
+        frontSrc.generateMipmaps = true; frontSrc.minFilter = THREE.LinearMipmapLinearFilter; frontSrc.magFilter = THREE.LinearFilter;
+        frontSrc.wrapS = frontSrc.wrapT = THREE.ClampToEdgeWrapping;
+        frontSrc.repeat.set(1, 1 / 0.925);
         const canvasTex = (w, h, draw) => {
           const c = document.createElement('canvas'); c.width = w; c.height = h;
           draw(c.getContext('2d'), w, h);
@@ -92,11 +101,10 @@ export default function Battery3D({ fallback, alt }) {
         const paint = (map, rough = 0.4, coat = 0.5) => new THREE.MeshPhysicalMaterial({ map, roughness: rough, clearcoat: coat, clearcoatRoughness: 0.3 });
         const group = new THREE.Group();
 
-        const body = new THREE.Mesh(new RoundedBoxGeometry(W, bodyH, D, 5, 0.035),
-          [paint(bodySide), paint(bodySide), paint(dark), paint(dark, 0.8, 0), paint(bodyFront, 0.32, 0.85), paint(bodySide)]);
-        // (the label photo is 70% of the front image; body front is 75.7% of the height → ~8% vertical stretch, not noticeable)
+        const body = new THREE.Mesh(new RoundedBoxGeometry(W, bodyH, D, 10, 0.035),
+          [paint(bodySide), paint(bodySide), paint(dark), paint(dark, 0.8, 0), paint(bodyFront, 0.3, 0.9), paint(bodySide)]);
         body.position.y = -H / 2 + bodyH / 2;
-        const lid = new THREE.Mesh(new RoundedBoxGeometry(W * 1.03, lidH, D * 1.04, 5, 0.035),
+        const lid = new THREE.Mesh(new RoundedBoxGeometry(W * 1.03, lidH, D * 1.04, 10, 0.035),
           [paint(lidSide, 0.38, 0.6), paint(lidSide, 0.38, 0.6), paint(lidTop, 0.36, 0.6), paint(dark, 0.8, 0), paint(lidFront, 0.36, 0.6), paint(lidSide, 0.38, 0.6)]);
         lid.position.y = H / 2 - lidH / 2;
         group.add(body, lid);
@@ -134,7 +142,48 @@ export default function Battery3D({ fallback, alt }) {
         };
         group.add(wire(0.5, '#d22b2b'), wire(0.72, '#141414'));
         group.position.y = -0.15;
+        group.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
         scene.add(group);
+
+        // floor that only shows the real shadow
+        const floor = new THREE.Mesh(new THREE.CircleGeometry(2.3, 64), new THREE.ShadowMaterial({ opacity: 0.1 }));
+        floor.rotation.x = -Math.PI / 2; floor.position.y = group.position.y - H / 2 - 0.005; floor.receiveShadow = true;
+        scene.add(floor);
+
+        // ---------- energy: glowing ring on the floor + floating sparks ----------
+        const glowTex = canvasTex(512, 512, (g, w, h) => {
+          const r = g.createRadialGradient(w / 2, h / 2, w * 0.36, w / 2, h / 2, w / 2);
+          r.addColorStop(0, 'rgba(255,120,80,0)'); r.addColorStop(0.55, 'rgba(255,120,80,.9)'); r.addColorStop(0.75, 'rgba(255,190,90,.35)'); r.addColorStop(1, 'rgba(255,120,80,0)');
+          g.fillStyle = r; g.fillRect(0, 0, w, h);
+        });
+        const ring = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 3.6), new THREE.MeshBasicMaterial({ map: glowTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.55 }));
+        ring.rotation.x = -Math.PI / 2; ring.position.y = floor.position.y + 0.01;
+        scene.add(ring);
+        const ring2 = ring.clone(); ring2.material = ring.material.clone(); scene.add(ring2);
+        const sparkTex = canvasTex(64, 64, (g, w, h) => {
+          const r = g.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2);
+          r.addColorStop(0, 'rgba(255,240,210,1)'); r.addColorStop(0.3, 'rgba(255,170,90,.7)'); r.addColorStop(1, 'rgba(255,120,80,0)');
+          g.fillStyle = r; g.fillRect(0, 0, w, h);
+        });
+        const N = 90, pos = new Float32Array(N * 3), seeds = [];
+        for (let i = 0; i < N; i++) {
+          const a = Math.random() * Math.PI * 2, rad = 1.5 + Math.random() * 1.3;
+          seeds.push({ a, rad, y: Math.random() * 3, s: 0.15 + Math.random() * 0.35, w: (Math.random() - 0.5) * 0.4 });
+        }
+        const sparksGeo = new THREE.BufferGeometry(); sparksGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+        const sparks = new THREE.Points(sparksGeo, new THREE.PointsMaterial({ size: 0.09, map: sparkTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.85 }));
+        scene.add(sparks);
+        const floorY = floor.position.y;
+        const updateSparks = (dt) => {
+          for (let i = 0; i < N; i++) {
+            const s = seeds[i];
+            s.y += s.s * dt; s.a += s.w * dt * 0.3;
+            if (s.y > 3.2) { s.y = 0; s.a = Math.random() * Math.PI * 2; }
+            pos[i * 3] = Math.cos(s.a) * s.rad; pos[i * 3 + 1] = floorY + s.y; pos[i * 3 + 2] = Math.sin(s.a) * s.rad;
+          }
+          sparksGeo.attributes.position.needsUpdate = true;
+        };
+        updateSparks(0);
 
         // soft contact shadow
         const shadowTex = canvasTex(256, 256, (g, w, h) => {
@@ -176,12 +225,15 @@ export default function Battery3D({ fallback, alt }) {
         const loop = () => {
           raf = 0;
           if (!visible) return;
-          const t = clock.getElapsedTime();
+          const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime;
           if (drag === null) { ry += AUTO + vel; vel *= 0.94; }    // after a flick it keeps spinning, then settles into the slow turn
           tilt += (tiltT - tilt) * 0.05;
           group.rotation.set(tilt, ry, 0);
           group.position.y = -0.15 + Math.sin(t * 1.1) * 0.05;
           shadow.scale.setScalar(1 - Math.sin(t * 1.1) * 0.04);
+          // two energy rings pulse outwards one after the other
+          [ring, ring2].forEach((r, i) => { const p = ((t * 0.35) + i * 0.5) % 1; r.scale.setScalar(0.6 + p * 0.9); r.material.opacity = 0.6 * (1 - p); });
+          updateSparks(dt);
           renderer.render(scene, camera);
           raf = requestAnimationFrame(loop);
         };
