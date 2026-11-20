@@ -1,4 +1,5 @@
 import { STATS } from '../data.js';
+import FloatingCells from './FloatingCells.jsx';
 
 const TEXT = 'Litpax Technology builds lithium battery packs that move India forward — from e-rickshaws on busy streets to solar homes and hospital equipment. Every pack is engineered in-house, tested to';
 const TAIL = 'standards and backed by service across the country.';
@@ -8,7 +9,8 @@ const words = (s) => s.split(' ').map((w, i) => <span key={i}><span className="w
 
 export default function Statement() {
   return (
-    <section className="statement">
+    <section className="statement has-cells">
+      <FloatingCells count={14} />
       <div className="wrap">
         <div className="label rv"><i />About Litpax</div>
         <p id="stmt">

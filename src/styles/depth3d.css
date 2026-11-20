@@ -1,0 +1,91 @@
+/* ===================== 3D LAYER =====================
+   Extruded type, glossy tilt glare, 3D buttons, floating-cell scenes,
+   tilted marquee ribbon and depth shadows. Motion lives in src/depth3d.js. */
+
+/* ---------- Floating 3D cells (Three.js canvas) ---------- */
+.cells3d{position:absolute;inset:0;pointer-events:none;z-index:0}
+.cells3d canvas{width:100%!important;height:100%!important;display:block}
+.has-cells{position:relative;overflow:hidden}
+.has-cells>.wrap{position:relative;z-index:1}
+.statement.has-cells .cells3d{opacity:.9;-webkit-mask-image:radial-gradient(120% 90% at 50% 50%,#000 55%,transparent 100%);mask-image:radial-gradient(120% 90% at 50% 50%,#000 55%,transparent 100%)}
+.cta-bg .cells3d{opacity:.85}
+.cta-c{z-index:2}
+
+/* ---------- Cards: glossy light that follows the tilt ---------- */
+.glare3d{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:4;opacity:0;transition:opacity .5s;
+  background:radial-gradient(600px circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.38),rgba(255,255,255,.08) 30%,transparent 55%);mix-blend-mode:soft-light}
+.tilting>.glare3d{opacity:1}
+.t,.stat,.cmp,.fq{position:relative}
+.has-3d .sc,.has-3d .wc,.has-3d .t,.has-3d .cmp,.has-3d .bt,.has-3d .fq{will-change:transform;transition:box-shadow .6s cubic-bezier(.16,1,.3,1)}
+.has-3d .sc:hover{transform:none}            /* lift now comes from GSAP (z) */
+.tilting{box-shadow:0 50px 80px -40px rgba(14,17,22,.5),0 18px 30px -18px rgba(14,17,22,.25)!important;z-index:5}
+.sc-big.tilting,.cmp.a.tilting{box-shadow:0 60px 100px -40px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.06)!important}
+
+/* resting depth: soft layered shadows so cards sit above the page */
+.has-3d .wc,.has-3d .t,.has-3d .cmp.b,.has-3d .bt{box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 24px 40px -30px rgba(14,17,22,.35),0 2px 6px -2px rgba(14,17,22,.08)}
+.has-3d .sc{box-shadow:0 26px 44px -34px rgba(14,17,22,.4),0 2px 6px -2px rgba(14,17,22,.06)}
+.has-3d .cmp.a,.has-3d .sc-big{box-shadow:0 40px 70px -35px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.08)}
+
+/* ---------- Extruded 3D headline (hero) — shadow follows the mouse ---------- */
+.hero h1 .ln>span{
+  --dx:calc(var(--sx,.8) * 1px);--dy:calc(var(--sy,1) * 1px);
+  text-shadow:
+    var(--dx) var(--dy) 0 #c3c8d2,
+    calc(var(--dx)*2) calc(var(--dy)*2) 0 #a2a8b5,
+    calc(var(--dx)*3) calc(var(--dy)*3) 0 #838a99,
+    calc(var(--dx)*4) calc(var(--dy)*4) 0 #666d7d,
+    calc(var(--dx)*5) calc(var(--dy)*5) 0 #4c5262,
+    calc(var(--dx)*6) calc(var(--dy)*6) 0 #363b48,
+    calc(var(--dx)*7) calc(var(--dy)*7) 0 #262a34,
+    calc(var(--dx)*12) calc(var(--dy)*16) 28px rgba(0,0,0,.7)}
+.hero h1 .serif.red{text-shadow:
+    var(--dx) var(--dy) 0 #b8363a,
+    calc(var(--dx)*2) calc(var(--dy)*2) 0 #a32f33,
+    calc(var(--dx)*3) calc(var(--dy)*3) 0 #8e292c,
+    calc(var(--dx)*4) calc(var(--dy)*4) 0 #792326,
+    calc(var(--dx)*5) calc(var(--dy)*5) 0 #641d1f,
+    calc(var(--dx)*10) calc(var(--dy)*14) 30px rgba(229,72,77,.45)}
+.hero h1 .ln{padding-bottom:.16em;padding-right:.1em}
+.hero .wrap>div:first-child{transform-style:preserve-3d;will-change:transform}
+
+/* ---------- Marquee becomes a tilted 3D ribbon ---------- */
+.mq{position:relative;z-index:2;transform:perspective(1000px) rotateX(18deg) rotate(-2.2deg) scale(1.05);
+  box-shadow:0 40px 60px -40px rgba(14,17,22,.45);margin:-10px 0}
+.mq-item span:not(.o){text-shadow:1px 1px 0 #d8d5ce,2px 2px 0 #cfccc4,3px 3px 0 #c6c2ba,4px 4px 0 #bdb9b0,8px 12px 18px rgba(14,17,22,.18)}
+.mq-item .dot{box-shadow:inset -4px -5px 0 rgba(0,0,0,.18),inset 3px 3px 0 rgba(255,255,255,.35),0 6px 12px rgba(229,72,77,.35)}
+.mq-item .dot.y{box-shadow:inset -4px -5px 0 rgba(0,0,0,.12),inset 3px 3px 0 rgba(255,255,255,.45),0 6px 12px rgba(243,208,74,.4)}
+
+/* ---------- Big numbers with depth ---------- */
+.stat b{text-shadow:1px 1px 0 #e3e0d9,2px 2px 0 #dad7cf,3px 3px 0 #d1cdc5,4px 4px 0 #c8c4bb,10px 14px 22px rgba(14,17,22,.16)}
+.sc-spec b{text-shadow:0 1px 0 rgba(255,255,255,.4),0 10px 18px rgba(14,17,22,.12)}
+.cell-big .pct{text-shadow:1px 1px 0 #c9c9c9,2px 2px 0 #b3b3b3,3px 3px 0 #9d9d9d,4px 4px 0 #888,10px 16px 24px rgba(0,0,0,.5)}
+
+/* Process battery: a real-looking 3D cell */
+.cell-big{transform-style:preserve-3d;background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.01) 40%,rgba(255,255,255,.07));
+  box-shadow:inset 6px 0 14px rgba(255,255,255,.06),inset -10px 0 20px rgba(0,0,0,.45),0 60px 90px -40px rgba(0,0,0,.8)}
+.cell-big .fill{background:linear-gradient(90deg,#a92a2e,#E5484D 30%,#F07A7D 48%,#E5484D 62%,#a92a2e)}
+
+/* ---------- CTA + footer headline extrusion ---------- */
+.cta h2{text-shadow:1px 1px 0 #f2c3c4,2px 2px 0 #e8a6a8,3px 3px 0 #d98386,4px 4px 0 #c86468,5px 5px 0 #b34c50,14px 20px 30px rgba(80,10,12,.45)}
+.f-giant span{text-shadow:2px 2px 0 #1f242d,4px 4px 0 #1a1e26,6px 6px 0 #15181f,8px 8px 0 #101318,18px 24px 40px rgba(0,0,0,.6)}
+.f-giant span:last-child{text-shadow:2px 2px 0 #b8363a,4px 4px 0 #9a2d30,6px 6px 0 #7c2427,8px 8px 0 #5e1b1d,18px 24px 40px rgba(229,72,77,.35)}
+.f-giant{perspective:800px}
+
+/* ---------- 3D buttons: a solid base under each pill ---------- */
+.btn-red{box-shadow:0 5px 0 #a92a2e,0 18px 30px -12px rgba(229,72,77,.7)}
+.btn-red:active{box-shadow:0 1px 0 #a92a2e,0 8px 16px -10px rgba(229,72,77,.7)}
+.btn-w{box-shadow:0 5px 0 rgba(14,17,22,.25),0 18px 30px -14px rgba(14,17,22,.5)}
+.sc-price{box-shadow:0 3px 0 rgba(0,0,0,.35)}
+.sc-price:active{box-shadow:0 0 0 rgba(0,0,0,.35);transform:translateY(3px)}
+
+/* ---------- Modal enters from depth ---------- */
+.pm{perspective:1400px}
+
+@media (prefers-reduced-motion: reduce){
+  .mq{transform:none}
+  .glare3d{display:none}
+}
+@media (max-width:760px){
+  .mq{transform:perspective(800px) rotateX(12deg) rotate(-2deg) scale(1.06)}
+  .hero h1 .ln>span{--dx:.5px;--dy:.7px}
+}

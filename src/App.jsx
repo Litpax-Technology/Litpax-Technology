@@ -24,6 +24,7 @@ import Testimonials from './components/Testimonials.jsx';
 import Cta from './components/Cta.jsx';
 import Contact from './components/Contact.jsx';
 import Footer from './components/Footer.jsx';
+import { initDepth3D } from './depth3d.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -231,12 +232,15 @@ export default function App() {
       gsap.from('.bf-bat', { scaleY: 0.4, opacity: 0, transformOrigin: 'bottom', duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: '.bf-result', start: 'top 80%' } });
     }, root);
 
+    // ---------- Site-wide 3D: tilt cards, depth entrances ----------
+    const undo3d = initDepth3D(root.current);
+
     const refresh = () => ScrollTrigger.refresh();
     addEventListener('load', refresh);
     document.fonts?.ready.then(refresh);
 
     return () => {
-      ctx.revert(); extra.revert(); cleanups.forEach((f) => f());
+      ctx.revert(); extra.revert(); undo3d(); cleanups.forEach((f) => f());
       removeEventListener('load', refresh);
       removeEventListener('mousemove', onSpot); removeEventListener('mousemove', onGlow);
       document.removeEventListener('click', onAnchor);
