@@ -18,7 +18,7 @@ export default function ProductModal({ product: p, onClose }) {
     if (!reduce) {
       const tl = gsap.timeline();
       tl.from('.pm-overlay', { opacity: 0, duration: 0.4 })
-        .from('.pm-panel', { y: 80, z: -300, rotationX: 28, transformPerspective: 1400, transformOrigin: '50% 100%', scale: 0.94, opacity: 0, duration: 0.8, ease: 'expo.out' }, 0)
+        .from('.pm-panel', { y: 80, scale: 0.94, opacity: 0, duration: 0.8, ease: 'expo.out' }, 0)
         .from('.pm-visual .pm-hero, .pm-visual .pack', { y: 40, scale: 0.92, opacity: 0, duration: 1, ease: 'expo.out' }, 0.15)
         .from('.pm-info > *', { y: 24, opacity: 0, stagger: 0.05, duration: 0.7, ease: 'expo.out' }, 0.2);
     }
