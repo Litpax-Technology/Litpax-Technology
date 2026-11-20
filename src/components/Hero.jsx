@@ -35,6 +35,7 @@ export default function Hero() {
   return (
     <section className="hero" id="top">
       <div className="hero-bg" aria-hidden="true" />
+      <div className="aurora" aria-hidden="true"><i /><i /><i /></div>
       <div className="wrap hero-in">
         <div className="hero-copy">
           <div className="eyebrow h-in"><span className="dot" />ISO 9001:2015 certified · Made in India</div>
@@ -62,6 +63,18 @@ export default function Hero() {
           <span className="stage-floor" aria-hidden="true" />
           <div className="stage-3d">
             <Battery3D active={model} fallback={HERO_LINEUP.front} alt={`Litpax ${MODELS[model].tab}, ${MODELS[model].name}, 3D model`} />
+          </div>
+          <div className="fcard c1" aria-hidden="true">
+            <span className="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="m9 12 2 2 4-4" /></svg></span>
+            <div><b>Smart BMS</b><span>Protected every ride</span></div>
+          </div>
+          <div className="fcard c2" aria-hidden="true">
+            <span className="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="9" r="6" /><path d="m8.5 14-1.5 8 5-3 5 3-1.5-8" /></svg></span>
+            <div><b>ISO 9001:2015</b><span>Certified quality</span></div>
+          </div>
+          <div className="fcard c3" aria-hidden="true">
+            <span className="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z" /><circle cx="12" cy="10" r="2.2" /></svg></span>
+            <div><b>Made in India</b><span>Sirsa, Haryana</span></div>
           </div>
           <div className="stage-ui">
             <div className="seg" role="tablist" aria-label="Choose product" ref={seg}>
