@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { PRODUCTS, waLink } from '../data.js';
+import { SectionHead } from './Sections.jsx';
 
 // Closest real Litpax model (same application + voltage, nearest capacity) that has a photo
 function closestModel(type, v, ah) {
@@ -76,16 +77,11 @@ export default function BatteryFinder() {
   return (
     <section className="finder" id="finder">
       <div className="wrap">
-        <div className="bf-head">
-          <div>
-            <div className="label rv"><i />Battery Finder</div>
-            <h2 className="rv">Find your <span className="serif red">perfect</span> pack</h2>
-          </div>
-          <p className="lead rv">Tell us how you use it — we'll estimate the right voltage and capacity in seconds.</p>
-        </div>
+        <SectionHead n="05" label="Battery Finder" title={<>Which battery do <span className="grad">you need?</span></>}
+          lead="Tell us how you use it — we'll estimate the right voltage and capacity in seconds." />
 
         <div className="bf-grid">
-          <div className="bf-panel rv spot">
+          <div className="bf-panel rv">
             <div className="bf-step">01 · Application</div>
             <div className="bf-types">
               {Object.entries(TYPES).map(([k, t]) => (
@@ -138,7 +134,7 @@ export default function BatteryFinder() {
                 <div><small>Closest Litpax model</small><b>{match.n}</b></div>
               </div>
             )}
-            <a className="btn btn-red magnetic" href={waLink(msg)} target="_blank" rel="noopener" data-cursor="Ask">
+            <a className="btn btn-primary" href={waLink(msg)} target="_blank" rel="noopener">
               Get price for this pack <span className="ar">→</span>
             </a>
             <p className="bf-note">Estimate only. Our team will confirm the exact pack for your vehicle or home.</p>

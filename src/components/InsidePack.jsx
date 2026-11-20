@@ -260,7 +260,7 @@ export default function InsidePack() {
       <div className={`xp-canvas${ready ? ' on' : ''}`} ref={host} aria-hidden="true" />
       <div className="xp-ui wrap">
         <div className="xp-copy">
-          <div className="label"><i />Inside the pack</div>
+          <div className="eyebrow"><span className="dot" /><span className="num">02 /</span>Inside the pack</div>
           <div className="xp-step" key={step}>
             <span className="xp-k">0{step + 1} — {s.k}</span>
             <h2>{s.h}</h2>

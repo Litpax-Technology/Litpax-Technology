@@ -17,8 +17,7 @@ Upload everything inside the `dist/` folder to your hosting (Hostinger `public_h
 | What | File |
 |---|---|
 | Products, specs, phone numbers, reviews, photos | `src/data.js` |
-| Colours & design | `src/styles/global.css` |
-| Photo-related styles | `src/styles/photos.css` |
+| Colours & design | `src/styles/site.css` |
 | Scroll animations | `src/App.jsx` |
 | Each section | `src/components/*.jsx` |
 

@@ -96,8 +96,8 @@ export default function ProductModal({ product: p, onClose }) {
             <li>Zero maintenance</li><li>Fast charging</li><li>Lightweight</li><li>Pan-India service</li>
           </ul>
           <div className="pm-cta">
-            <a className="btn btn-red" href={waLink(`Hi Litpax, I want details & price of ${p.n}.`)} target="_blank" rel="noopener">Get price <span className="ar">→</span></a>
-            <a className="btn btn-out" href={CONTACT.shop} target="_blank" rel="noopener">Buy online <span className="ar">↗</span></a>
+            <a className="btn btn-primary" href={waLink(`Hi Litpax, I want details & price of ${p.n}.`)} target="_blank" rel="noopener">Get price <span className="ar">→</span></a>
+            <a className="btn btn-ghost" href={CONTACT.shop} target="_blank" rel="noopener">Buy online <span className="ar">↗</span></a>
           </div>
         </div>
       </div>
