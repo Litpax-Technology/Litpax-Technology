@@ -4,7 +4,7 @@ import { FAQ, waLink } from '../data.js';
 export default function Faq() {
   const [open, setOpen] = useState(0);
   return (
-    <section className="faq" id="faq">
+    <section className="faq alt" id="faq">
       <div className="wrap faq-in">
         <div className="faq-left">
           <div className="eyebrow rv"><span className="dot" /><span className="num">09 /</span>FAQ</div>

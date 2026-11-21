@@ -17,7 +17,8 @@ export default function Why() {
     c.style.setProperty('--my', `${e.clientY - r.top}px`);
   };
   return (
-    <section id="why">
+    <>
+    <section id="why" className="alt">
       <div className="wrap">
         <SectionHead n="07" label="Why Litpax" title={<>Built in-house. <span className="grad">Backed nationwide.</span></>}
           lead="We design, assemble and test every battery pack in our own facility — consistent quality at a competitive price." />
@@ -39,8 +40,14 @@ export default function Why() {
           <div className="rv"><span className="ic">BMS</span><div><b>Smart BMS</b><span>In every pack we ship</span></div></div>
         </div>
 
+      </div>
+    </section>
+
+    <section id="compare" data-theme="dark">
+      <div className="wrap">
         <div className="cmp">
-          <SectionHead label="Lithium vs Lead-acid" title={<>Why <span className="grad">switch</span> to lithium.</>} />
+          <SectionHead label="Lithium vs Lead-acid" title={<>Why <span className="grad">switch</span> to lithium.</>}
+            lead="Less weight, no maintenance and a far longer life — the numbers speak for themselves." />
           <div className="cmp-table rv" role="table" aria-label="Litpax lithium compared with lead-acid">
             <div className="cmp-row head" role="row">
               <span className="k" role="columnheader">Feature</span>
@@ -58,5 +65,6 @@ export default function Why() {
         </div>
       </div>
     </section>
+    </>
   );
 }

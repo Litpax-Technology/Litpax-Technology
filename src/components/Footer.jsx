@@ -8,7 +8,7 @@ const WaIcon = ({ size = 17, fill = 'currentColor' }) => (
 export default function Footer() {
   return (
     <>
-      <footer>
+      <footer data-theme="dark">
         <div className="wrap">
           <div className="f-top">
             <div>

@@ -57,7 +57,7 @@ export default function Products({ filter, setFilter, onOpen }) {
   }, [filter]);
 
   return (
-    <section id="products">
+    <section id="products" className="alt">
       <div className="wrap">
         <div className="prod-head">
           <div>

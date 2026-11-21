@@ -15,6 +15,8 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
+  const [dark, setDark] = useState(true);     // header follows the theme of the section under it
+  const [active, setActive] = useState('');   // nav link of the section in view
 
   useEffect(() => {
     let last = 0;
@@ -23,6 +25,13 @@ export default function Header() {
       setScrolled(y > 30);
       setHidden(y > last && y > 600);
       last = y;
+      // theme of whatever sits under the header bar
+      const under = [...document.querySelectorAll('main section, footer')].filter((s) => { const r = s.getBoundingClientRect(); return r.top <= 44 && r.bottom > 44; }).pop();
+      setDark(under?.getAttribute('data-theme') === 'dark');
+      // active link: the last linked section whose top has passed 40% of the screen
+      let cur = '';
+      LINKS.forEach(([href]) => { const s = document.querySelector(href); if (s && s.getBoundingClientRect().top < innerHeight * 0.4) cur = href; });
+      setActive(cur);
     };
     onScroll();
     addEventListener('scroll', onScroll, { passive: true });
@@ -47,14 +56,15 @@ export default function Header() {
 
   const close = () => setOpen(false);
   const cls = ['hd', (scrolled || open) && 'is-scrolled', hidden && !open && 'is-hidden'].filter(Boolean).join(' ');
+  const theme = open || dark ? 'dark' : 'light';
 
   return (
     <>
-      <header className={cls}>
+      <header className={cls} data-theme={theme}>
         <div className="hd-in">
           <Logo />
           <nav className="hd-nav" aria-label="Main">
-            <ul>{LINKS.map(([href, label]) => <li key={href}><a href={href}>{label}</a></li>)}</ul>
+            <ul>{LINKS.map(([href, label]) => <li key={href}><a href={href} className={active === href ? 'active' : ''} aria-current={active === href ? 'true' : undefined}>{label}</a></li>)}</ul>
           </nav>
           <div className="hd-act">
             <a className="btn btn-ghost sm hide-m" href={CONTACT.shop} target="_blank" rel="noopener">Shop</a>

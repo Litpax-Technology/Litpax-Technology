@@ -16,16 +16,31 @@ function Row({ label, children, href, external }) {
 // The quote form opens WhatsApp with the enquiry pre-filled (no server needed).
 export default function Contact() {
   const [f, setF] = useState({ name: '', phone: '', city: '', type: OPTIONS[0], req: '' });
-  const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
+  const [err, setErr] = useState({});
+  const [sent, setSent] = useState(false);
+  const set = (k) => (e) => { setF({ ...f, [k]: e.target.value }); if (err[k]) setErr({ ...err, [k]: '' }); };
+
+  const check = () => {
+    const e = {};
+    if (f.name.trim().length < 2) e.name = 'Please enter your name.';
+    if (f.phone.replace(/\D/g, '').length < 10) e.phone = 'Enter a valid 10-digit phone number.';
+    return e;
+  };
 
   const submit = (e) => {
     e.preventDefault();
+    const found = check();
+    setErr(found);
+    if (Object.keys(found).length) return;
     const msg = `Hi Litpax, new enquiry:\nName: ${f.name}\nPhone: ${f.phone}\nCity: ${f.city}\nBattery for: ${f.type}\nRequirement: ${f.req}`;
-    window.open(waLink(msg), '_blank');
+    window.open(waLink(msg), '_blank');   // opened directly from the click so pop-up blockers allow it
+    setSent(true);
+    setTimeout(() => setSent(false), 4000);
   };
+  const cls = (k) => `fld${err[k] ? ' err' : f[k] && k !== 'type' ? ' ok' : ''}`;
 
   return (
-    <section className="contact" id="contact">
+    <section className="contact alt" id="contact">
       <div className="wrap">
         <div>
           <div className="eyebrow rv"><span className="dot" /><span className="num">10 /</span>Contact</div>
@@ -41,12 +56,20 @@ export default function Contact() {
           </div>
         </div>
 
-        <form className="rv" onSubmit={submit}>
+        <form className="rv" onSubmit={submit} noValidate>
           <h3>Request a quote</h3>
           <p className="sub">Your enquiry opens in WhatsApp, pre-filled — our team replies fast.</p>
           <div className="row">
-            <div className="fld"><input id="fn" required placeholder=" " value={f.name} onChange={set('name')} /><label htmlFor="fn">Your name</label></div>
-            <div className="fld"><input id="fp" type="tel" required placeholder=" " value={f.phone} onChange={set('phone')} /><label htmlFor="fp">Phone number</label></div>
+            <div className={cls('name')}>
+              <input id="fn" required placeholder=" " autoComplete="name" value={f.name} onChange={set('name')} aria-invalid={!!err.name} aria-describedby={err.name ? 'fn-e' : undefined} />
+              <label htmlFor="fn">Your name</label>
+              {err.name && <span className="msg" id="fn-e">{err.name}</span>}
+            </div>
+            <div className={cls('phone')}>
+              <input id="fp" type="tel" inputMode="tel" required placeholder=" " autoComplete="tel" value={f.phone} onChange={set('phone')} aria-invalid={!!err.phone} aria-describedby={err.phone ? 'fp-e' : undefined} />
+              <label htmlFor="fp">Phone number</label>
+              {err.phone && <span className="msg" id="fp-e">{err.phone}</span>}
+            </div>
           </div>
           <div className="row">
             <div className="fld"><input id="fc" placeholder=" " value={f.city} onChange={set('city')} /><label htmlFor="fc">City</label></div>
@@ -57,6 +80,7 @@ export default function Contact() {
           </div>
           <div className="fld"><textarea id="fm" placeholder=" " value={f.req} onChange={set('req')} /><label htmlFor="fm">Requirement (e.g. 60V 30Ah × 10)</label></div>
           <button className="btn btn-primary" type="submit">Send enquiry on WhatsApp <span className="ar">→</span></button>
+          {sent && <p className="form-ok" role="status">✓ WhatsApp opened with your enquiry — just tap send.</p>}
         </form>
       </div>
     </section>

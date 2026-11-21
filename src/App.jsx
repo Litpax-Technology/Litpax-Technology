@@ -95,9 +95,9 @@ export default function App() {
         io.unobserve(e.target);
       });
     }, { rootMargin: '0px 0px -6% 0px' });
-    root.current.querySelectorAll('.rv').forEach((el) => io.observe(el));
+    root.current.querySelectorAll('.rv, .rv-img').forEach((el) => io.observe(el));
     // elements added later (e.g. filtered products) — watch the DOM for new .rv nodes
-    const mo = new MutationObserver(() => root.current?.querySelectorAll('.rv:not(.in)').forEach((el) => io.observe(el)));
+    const mo = new MutationObserver(() => root.current?.querySelectorAll('.rv:not(.in), .rv-img:not(.in)').forEach((el) => io.observe(el)));
     mo.observe(root.current, { childList: true, subtree: true });
 
     const refresh = () => ScrollTrigger.refresh();

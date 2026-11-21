@@ -75,7 +75,7 @@ export default function BatteryFinder() {
   const msg = `Hi Litpax, the Battery Finder suggests a ${res.v}V ${res.ah}Ah pack for ${TYPES[type].label} (${res.detail}). Please share price and details.`;
 
   return (
-    <section className="finder" id="finder">
+    <section className="finder" id="finder" data-theme="dark">
       <div className="wrap">
         <SectionHead n="05" label="Battery Finder" title={<>Which battery do <span className="grad">you need?</span></>}
           lead="Tell us how you use it — we'll estimate the right voltage and capacity in seconds." />

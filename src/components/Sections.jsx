@@ -93,7 +93,7 @@ export function Process() {
       <div className="wrap">
         <SectionHead n="06" label="How we build" title={<>From cell to <span className="grad">full power.</span></>}
           lead="Every Litpax pack passes through our in-house production and testing line before it reaches you." />
-        <div className="proc-photo rv">
+        <div className="proc-photo rv-img">
           <div id="procImg" style={{ backgroundImage: `url("${PHOTOS.process}")` }} />
           <div className="cap"><span>Sirsa, Haryana</span><b>Built and tested on our own line.</b></div>
         </div>
@@ -136,11 +136,12 @@ export function Reviews() {
 
 export function Cta() {
   return (
-    <section style={{ paddingTop: 40 }}>
+    <section style={{ paddingTop: 0 }}>
       <div className="wrap">
         <div className="cta-card rv">
           <div className="bg" style={{ backgroundImage: `url("${PHOTOS.cta}")` }} />
-          <div className="eyebrow" style={{ color: 'rgba(255,255,255,.8)' }}><span className="dot" />Dealership open</div>
+          <div className="ambient" aria-hidden="true"><i /><i /><i /></div>
+          <div className="eyebrow"><span className="dot" />Dealership open</div>
           <h2>Become a<br />Litpax dealer.</h2>
           <p>Competitive pricing, flexible bulk orders and pan-India service support. Grow with a Made-in-India battery brand.</p>
           <div className="row">

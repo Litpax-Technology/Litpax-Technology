@@ -33,9 +33,9 @@ export default function Hero() {
   }, [model]);
 
   return (
-    <section className="hero" id="top">
-      <div className="hero-bg" aria-hidden="true" />
-      <div className="aurora" aria-hidden="true"><i /><i /><i /></div>
+    <section className="hero" id="top" data-theme="dark">
+      <div className="ambient" aria-hidden="true"><i /><i /><i /></div>
+      <div className="grid-bg" aria-hidden="true" />
       <div className="wrap hero-in">
         <div className="hero-copy">
           <div className="eyebrow h-in"><span className="dot" />ISO 9001:2015 certified · Made in India</div>
