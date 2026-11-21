@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { FAQ, waLink } from '../data.js';
+import { SectionHead } from './Sections.jsx';
 
 export default function Faq() {
   const [open, setOpen] = useState(0);
   return (
-    <section className="faq alt" id="faq">
-      <div className="wrap faq-in">
+    <section className="faq" id="faq">
+      <div className="wrap">
+        <SectionHead n="09" label="FAQ" title={<>Questions, <mark>answered.</mark></>} lead="Still unsure? Our team is one WhatsApp message away." />
+      <div className="faq-in">
         <div className="faq-left">
-          <div className="eyebrow rv"><span className="dot" /><span className="num">09 /</span>FAQ</div>
-          <h2 className="rv">Questions, <span className="grad">answered.</span></h2>
-          <p className="lead rv" style={{ marginTop: 22 }}>Still unsure? Our team is one WhatsApp message away.</p>
-          <a className="btn btn-ghost rv" href={waLink('Hi Litpax, I have a question.')} target="_blank" rel="noopener">Ask on WhatsApp <span className="ar">→</span></a>
+          <p className="faq-note rv">Can't find your answer? Ask us directly — we usually reply within minutes during working hours.</p>
+          <a className="btn btn-k rv" href={waLink('Hi Litpax, I have a question.')} target="_blank" rel="noopener">Ask on WhatsApp <span className="ar">→</span></a>
         </div>
         <div className="faq-list">
           {FAQ.map(([q, a], i) => (
@@ -24,6 +25,7 @@ export default function Faq() {
             </div>
           ))}
         </div>
+      </div>
       </div>
     </section>
   );

@@ -1,79 +1,92 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { FILTERS, PRODUCTS, waLink } from '../data.js';
+import { CONTACT, FILTERS, PRODUCTS, waLink } from '../data.js';
+import { SectionHead } from './Sections.jsx';
 
+// Product Explorer: model list on the left, a large showcase on the right.
+// Filters (also set by the Applications section) narrow the list;
+// "Gallery & details" opens the existing product modal.
 const FEATURED = '60V 32Ah Lithium Battery';
-const chem = (ch) => (ch === 'LFP' ? 'LFP' : ch === 'Li-ion' ? 'Li-ion' : 'Lithium');
+const chem = (ch) => (ch === 'LFP' ? 'LFP (LiFePO₄)' : ch === 'Li-ion' ? 'Lithium-ion' : 'Lithium');
 const ah = (cap) => (cap === 'On request' ? null : parseFloat(cap));
 
-function Card({ p, onOpen, feat }) {
-  return (
-    <article className={`pc${feat ? ' feat' : ''}`} onClick={() => onOpen(p)} tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && onOpen(p)}>
-      <div className="pc-top"><span className="pc-cat">{p.t} · {chem(p.ch)}</span></div>
-      {feat && <span className="pc-flag">Best seller</span>}
-      <div className="pc-stage">
-        <span className="pc-glow" />
-        {p.img
-          ? <img src={`${p.img[0]}-${feat ? 'lg' : 'sm'}.webp`} alt={p.n} loading={feat ? 'eager' : 'lazy'} decoding="async" width={feat ? 1200 : 640} height={feat ? 900 : 480} />
-          : <span className="pc-v">{p.v}<small>V</small></span>}
-      </div>
-      <div className="pc-body">
-        <h3 className="pc-name">{p.n}</h3>
-        <div className="pc-spec"><b>{p.v}<small>V</small></b>{ah(p.cap) && <b className="r">{ah(p.cap)}<small>Ah</small></b>}</div>
-        {feat && <p className="pc-desc">High-range lithium-ion pack with Smart BMS for e-scooters and e-bikes. Built and tested in Sirsa, Haryana.</p>}
-        <div className="pc-act" onClick={(e) => e.stopPropagation()}>
-          <a className="pc-price" href={waLink(`Hi Litpax, I want details & price of ${p.n}.`)} target="_blank" rel="noopener">Get price</a>
-          <button className="pc-more" type="button" onClick={() => onOpen(p)}>Details →</button>
-        </div>
-      </div>
-    </article>
-  );
-}
-
 export default function Products({ filter, setFilter, onOpen }) {
-  const tabs = useRef(null);
-  const grid = useRef(null);
-  const first = useRef(true);
-  const [pill, setPill] = useState({ w: 0, x: 0 });
   const list = PRODUCTS.filter((p) => filter === 'all' || p.c === filter);
-  const featured = list.find((p) => p.n === FEATURED) || list.find((p) => p.img) || list[0];
-  const rest = list.filter((p) => p !== featured);
+  const start = Math.max(0, list.findIndex((p) => p.n === FEATURED));
+  const [sel, setSel] = useState(start);
+  const stage = useRef(null);
+  const first = useRef(true);
 
-  useLayoutEffect(() => {
-    const place = () => {
-      const a = tabs.current?.querySelector('button.on');
-      if (a) setPill({ w: a.offsetWidth, x: a.offsetLeft });
-    };
-    place();
-    document.fonts?.ready.then(place);
-    addEventListener('resize', place);
-    return () => removeEventListener('resize', place);
-  }, [filter]);
+  // new filter → select its first (or featured) model
+  useEffect(() => { setSel(Math.max(0, list.findIndex((p) => p.n === FEATURED))); }, [filter]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const p = list[Math.min(sel, list.length - 1)] || list[0];
+
+  // showcase swaps with a short slide/fade
   useEffect(() => {
     if (first.current) { first.current = false; return; }
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    gsap.fromTo(grid.current.children, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.04, ease: 'expo.out', clearProps: 'transform,opacity' });
-  }, [filter]);
+    if (!stage.current || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    gsap.fromTo(stage.current.querySelectorAll('.ex-anim'), { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, stagger: 0.05, ease: 'expo.out', clearProps: 'transform,opacity' });
+  }, [p?.n]);
+
+  if (!p) return null;
+  const specs = [
+    ['Voltage', `${p.v} V`],
+    ['Capacity', p.cap],
+    ['Chemistry', chem(p.ch)],
+    [p.c === 'solar' ? 'Best for' : 'Range', p.r],
+    ['Protection', 'Smart BMS'],
+    ['Made in', 'Sirsa, India'],
+  ];
 
   return (
-    <section id="products" className="alt">
+    <section id="products" className="products">
       <div className="wrap">
-        <div className="prod-head">
-          <div>
-            <div className="eyebrow rv"><span className="dot" /><span className="num">04 /</span>Our batteries</div>
-            <h2 className="rv">Find your <span className="grad">pack.</span></h2>
-          </div>
-          <div className="tabs rv" ref={tabs} role="tablist" aria-label="Filter batteries">
-            <span className="pill" style={{ width: pill.w, transform: `translateX(${pill.x}px)` }} aria-hidden="true" />
-            {FILTERS.map(({ f, label }) => (
-              <button key={f} role="tab" aria-selected={filter === f} className={filter === f ? 'on' : ''} onClick={() => setFilter(f)}>{label}</button>
-            ))}
-          </div>
+        <SectionHead n="04" label="Product range" title={<>Find your <mark>pack.</mark></>}
+          lead="Pick a model to see it up close. Every pack ships with a Smart BMS and is tested before it leaves our line." />
+
+        <div className="filters rv" role="tablist" aria-label="Filter batteries">
+          {FILTERS.map(({ f, label }) => (
+            <button key={f} role="tab" aria-selected={filter === f} className={filter === f ? 'on' : ''} onClick={() => setFilter(f)}>
+              {label}<small>{PRODUCTS.filter((x) => f === 'all' || x.c === f).length}</small>
+            </button>
+          ))}
         </div>
-        <div className="pgrid" ref={grid}>
-          {featured && <Card p={featured} onOpen={onOpen} feat />}
-          {rest.map((p) => <Card key={p.n} p={p} onOpen={onOpen} />)}
+
+        <div className="explorer rv">
+          <ul className="ex-list" aria-label="Models">
+            {list.map((x, i) => (
+              <li key={x.n}>
+                <button className={x === p ? 'on' : ''} onClick={() => setSel(i)} aria-pressed={x === p}>
+                  <span className="exl-v">{x.v}<small>V</small></span>
+                  <span className="exl-n">{x.n}<small>{x.t} · {x.ch}</small></span>
+                  <span className="exl-c">{ah(x.cap) ? `${ah(x.cap)}Ah` : '—'}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+
+          <div className="ex-stage" ref={stage}>
+            <div className="ex-visual">
+              <span className="ex-v-bg" aria-hidden="true">{p.v}V</span>
+              {p.img
+                ? <img className="ex-anim" src={`${p.img[0]}-lg.webp`} alt={p.n} width="1200" height="900" decoding="async" />
+                : <span className="ex-noimg ex-anim">{p.v}<small>V</small></span>}
+              {p.n === FEATURED && <span className="ex-flag">Best seller</span>}
+            </div>
+            <div className="ex-info">
+              <span className="ex-cat ex-anim">{p.t}</span>
+              <h3 className="ex-anim">{p.n}</h3>
+              <dl className="ex-specs ex-anim">
+                {specs.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}
+              </dl>
+              <div className="ex-ctas ex-anim">
+                <a className="btn btn-y" href={waLink(`Hi Litpax, I want details & price of ${p.n}.`)} target="_blank" rel="noopener">Get price <span className="ar">→</span></a>
+                <button className="btn btn-line-k" type="button" onClick={() => onOpen(p)}>Gallery &amp; details</button>
+                <a className="ex-shop" href={CONTACT.shop} target="_blank" rel="noopener">Buy online ↗</a>
+              </div>
+            </div>
+          </div>
         </div>
         <p className="p-note">* Specifications marked "On request" will be updated with official data. Range depends on vehicle and usage.</p>
       </div>

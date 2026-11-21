@@ -17,6 +17,7 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(true);     // header follows the theme of the section under it
   const [active, setActive] = useState('');   // nav link of the section in view
+  const [prog, setProg] = useState(0);        // page scroll progress 0..1
 
   useEffect(() => {
     let last = 0;
@@ -32,6 +33,7 @@ export default function Header() {
       let cur = '';
       LINKS.forEach(([href]) => { const s = document.querySelector(href); if (s && s.getBoundingClientRect().top < innerHeight * 0.4) cur = href; });
       setActive(cur);
+      setProg(Math.min(1, y / Math.max(1, document.documentElement.scrollHeight - innerHeight)));
     };
     onScroll();
     addEventListener('scroll', onScroll, { passive: true });
@@ -55,12 +57,13 @@ export default function Header() {
   }, []);
 
   const close = () => setOpen(false);
-  const cls = ['hd', (scrolled || open) && 'is-scrolled', hidden && !open && 'is-hidden'].filter(Boolean).join(' ');
-  const theme = open || dark ? 'dark' : 'light';
+  const cls = ['hd', scrolled && !open && 'is-scrolled', hidden && !open && 'is-hidden'].filter(Boolean).join(' ');
+  const theme = !open && dark ? 'dark' : 'light';   // black on the yellow menu
 
   return (
     <>
       <header className={cls} data-theme={theme}>
+        <div className="hd-prog" aria-hidden="true"><i style={{ transform: `scaleX(${prog})` }} /></div>
         <div className="hd-in">
           <Logo />
           <nav className="hd-nav" aria-label="Main">

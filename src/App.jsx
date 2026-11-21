@@ -15,6 +15,7 @@ import Faq from './components/Faq.jsx';
 import Contact from './components/Contact.jsx';
 import Footer from './components/Footer.jsx';
 import ProductModal from './components/ProductModal.jsx';
+import Loader from './components/Loader.jsx';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -50,14 +51,15 @@ export default function App() {
 
     const ctx = gsap.context(() => {
       // ---------- hero intro ----------
-      gsap.timeline({ delay: 0.15 })
+      gsap.timeline({ delay: 1.55 })   // starts as the loader curtain lifts
         .from('.hero h1 .ln>span', { yPercent: 110, duration: 1.3, stagger: 0.09, ease: 'expo.out' })
         .from('.h-in', { y: 24, opacity: 0, duration: 1.1, stagger: 0.08, ease: 'expo.out' }, '-=1.05')
         .from('.h-stage', { opacity: 0, scale: 0.94, duration: 1.6, ease: 'expo.out' }, 0.2)
         .from('.hd', { y: -30, opacity: 0, duration: 1, ease: 'expo.out' }, 0.1);
 
-      // hero copy drifts up and fades as you leave
-      gsap.to('.hero-copy', { yPercent: -10, opacity: 0.3, ease: 'none', scrollTrigger: { trigger: '.hero', start: '30% top', end: 'bottom top', scrub: true } });
+      // hero headline drifts apart as you leave
+      gsap.to('.hero-title .l1', { xPercent: -6, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+      gsap.to('.hero-title .l3', { xPercent: 6, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
 
 
       // ---------- counters ----------
@@ -69,20 +71,16 @@ export default function App() {
       // ---------- process: photo parallax + timeline fills ----------
       gsap.fromTo('#procImg', { yPercent: -6 }, { yPercent: 6, ease: 'none', scrollTrigger: { trigger: '.proc-photo', start: 'top bottom', end: 'bottom top', scrub: true } });
       const steps = gsap.utils.toArray('.step');
-      gsap.to('#stepsFill', {
-        scaleX: 1, ease: 'none',
-        scrollTrigger: {
-          trigger: '#steps', start: 'top 80%', end: 'bottom 55%', scrub: true,
-          onUpdate: (self) => steps.forEach((s, i) => s.classList.toggle('on', self.progress >= i / steps.length + 0.05 || self.progress > 0.97)),
-        },
+      ScrollTrigger.create({
+        trigger: '#steps', start: 'top 75%', end: 'bottom 45%',
+        onUpdate: (self) => steps.forEach((s, i) => s.classList.toggle('on', self.progress >= i / steps.length + 0.05 || self.progress > 0.97)),
       });
 
-      // ---------- tiles: subtle image parallax ----------
-      gsap.utils.toArray('.tile-img').forEach((img) =>
-        gsap.fromTo(img, { yPercent: -5 }, { yPercent: 5, ease: 'none', scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } }));
+      // CTA headline slides in from the side
+      gsap.fromTo('.cta-t', { xPercent: -8 }, { xPercent: 0, ease: 'none', scrollTrigger: { trigger: '.cta', start: 'top bottom', end: 'top 30%', scrub: true } });
 
-      // CTA card scales in
-      gsap.fromTo('.cta-card', { scale: 0.94 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: '.cta-card', start: 'top bottom', end: 'top 40%', scrub: true } });
+      // footer wordmark rises
+      gsap.fromTo('.f-word', { yPercent: 40 }, { yPercent: 0, ease: 'none', scrollTrigger: { trigger: '.foot', start: 'top bottom', end: 'bottom bottom', scrub: true } });
     }, root);
 
     // ---------- reveal on scroll: IntersectionObserver, independent of layout shifts ----------
@@ -115,6 +113,7 @@ export default function App() {
 
   return (
     <div ref={root}>
+      <Loader />
       <Header />
       <main>
         <Hero />

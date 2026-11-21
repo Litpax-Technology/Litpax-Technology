@@ -75,9 +75,9 @@ export default function BatteryFinder() {
   const msg = `Hi Litpax, the Battery Finder suggests a ${res.v}V ${res.ah}Ah pack for ${TYPES[type].label} (${res.detail}). Please share price and details.`;
 
   return (
-    <section className="finder" id="finder" data-theme="dark">
+    <section className="finder" id="finder">
       <div className="wrap">
-        <SectionHead n="05" label="Battery Finder" title={<>Which battery do <span className="grad">you need?</span></>}
+        <SectionHead n="05" label="Battery Finder" title={<>Which battery do <mark>you need?</mark></>}
           lead="Tell us how you use it — we'll estimate the right voltage and capacity in seconds." />
 
         <div className="bf-grid">
@@ -134,7 +134,7 @@ export default function BatteryFinder() {
                 <div><small>Closest Litpax model</small><b>{match.n}</b></div>
               </div>
             )}
-            <a className="btn btn-primary" href={waLink(msg)} target="_blank" rel="noopener">
+            <a className="btn btn-y" href={waLink(msg)} target="_blank" rel="noopener">
               Get price for this pack <span className="ar">→</span>
             </a>
             <p className="bf-note">Estimate only. Our team will confirm the exact pack for your vehicle or home.</p>

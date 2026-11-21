@@ -1,26 +1,31 @@
-// Smaller sections of the page, kept together: shared section heading,
-// ticker, about + stats, applications bento, process, reviews, CTA.
+// Page sections (Industrial Editorial design): shared section header,
+// tape ticker, about, applications accordion, process, reviews slider, CTA.
+import { useEffect, useState } from 'react';
 import { APPLICATIONS, PHOTOS, REVIEWS, STATS, STEPS, waLink } from '../data.js';
 
-export function SectionHead({ n, label, title, lead, center }) {
+export function SectionHead({ n, label, title, lead }) {
   return (
-    <div className={`sh${center ? ' center' : ''}`}>
-      <div>
-        <div className="eyebrow rv"><span className="dot" />{n && <span className="num">{n} /</span>}{label}</div>
-        <h2 className="rv">{title}</h2>
+    <header className="sx-head">
+      <div className="sx-meta rv">
+        {n && <span className="sx-n">{n}</span>}
+        <span className="sx-l">{label}</span>
+        <span className="sx-rule" aria-hidden="true" />
       </div>
-      {lead && <p className="lead rv">{lead}</p>}
-    </div>
+      <div className="sx-row">
+        <h2 className="rv">{title}</h2>
+        {lead && <p className="sx-lead rv">{lead}</p>}
+      </div>
+    </header>
   );
 }
 
-const WORDS = ['E-Bike & Scooter', 'E-Rickshaw', 'Solar & Inverter', 'E-Cycle', 'Medical', 'Telecom', 'Custom packs'];
+const WORDS = ['Lithium-ion', 'LFP power', 'Smart BMS', 'Made in India', 'E-Bike', 'E-Rickshaw', 'Solar & Inverter', 'Custom packs'];
 export function Ticker() {
   const row = [...WORDS, ...WORDS];
   return (
-    <div className="ticker" aria-hidden="true">
-      <div className="ticker-track">
-        {[0, 1].map((k) => row.map((w, i) => <span key={`${k}-${i}`}><b>{w}</b><i /></span>))}
+    <div className="tape" aria-hidden="true">
+      <div className="tape-track">
+        {[0, 1].map((k) => row.map((w, i) => <span key={`${k}-${i}`}>{w}<i>✦</i></span>))}
       </div>
     </div>
   );
@@ -30,20 +35,18 @@ export function About() {
   return (
     <section className="about" id="about">
       <div className="wrap">
-        <div className="about-in">
-          <div>
-            <div className="eyebrow rv"><span className="dot" /><span className="num">01 /</span>About Litpax</div>
-            <h2 className="rv">Lithium power that moves <span className="grad">India forward.</span></h2>
-          </div>
-          <div className="about-copy">
-            <p className="rv">Litpax Technology builds lithium battery packs for <strong>e-rickshaws on busy streets, solar homes and hospital equipment.</strong></p>
-            <p className="rv">Every pack is engineered in-house, tested to <strong>ISO 9001:2015</strong> standards and backed by service across the country.</p>
-          </div>
+        <SectionHead n="01" label="About Litpax" title={<>Power that moves <mark>India</mark> forward.</>} />
+        <div className="about-body">
+          <p className="about-big rv">
+            Litpax Technology builds lithium battery packs for e-rickshaws on busy streets, solar homes and hospital
+            equipment. Every pack is <u>engineered in-house</u>, tested to <u>ISO 9001:2015</u> standards and backed by
+            service across the country.
+          </p>
         </div>
-        <div className="stats rv">
+        <div className="figures">
           {STATS.map(([n, label]) => (
-            <div className="stat" key={label}>
-              <b><span data-count={n}>{n}</span><sup>+</sup></b>
+            <div className="fig rv" key={label}>
+              <b><span data-count={n}>{n}</span><em>+</em></b>
               <span>{label}</span>
             </div>
           ))}
@@ -53,35 +56,37 @@ export function About() {
   );
 }
 
+// Expanding panel accordion: hover (desktop) or tap (mobile) opens a panel.
 export function Applications({ onPick }) {
-  const size = ['big', '', '', '', '', 'wide'];
+  const [open, setOpen] = useState(0);
   return (
     <section id="applications">
       <div className="wrap">
-        <SectionHead n="03" label="Applications" title={<>One partner for <span className="grad">every</span> application.</>}
-          lead="From two-wheelers to hospitals — tap a category to see the matching batteries." />
-        <div className="bento">
+        <SectionHead n="03" label="Applications" title={<>One partner. <mark>Every</mark> application.</>}
+          lead="From two-wheelers to hospitals — open a category to see what we build for it." />
+        <div className="acc rv" role="list">
           {APPLICATIONS.map((a, i) => (
-            <a key={a.title} href={a.go ? '#products' : '#contact'} className={`tile rv ${size[i] || ''}`} onClick={() => a.go && onPick(a.go)}>
-              <div className="tile-img" style={{ backgroundImage: `url("${a.img}")` }} />
-              <span className="tile-n">{String(i + 1).padStart(2, '0')}</span>
-              <span className="tile-go" aria-hidden="true">↗</span>
-              <h3>{a.title}</h3>
-              <p>{a.text}</p>
-              <div className="chips">{a.chips.map((c) => <span className="chip" key={c}>{c}</span>)}</div>
-            </a>
-          ))}
-          <a href="#contact" className="tile custom wide rv">
-            <span className="mono" style={{ fontSize: 12, letterSpacing: '.1em', textTransform: 'uppercase' }}>Custom engineering</span>
-            <div className="row">
-              <div>
-                <h3>Need a custom pack?</h3>
-                <p>Tell us your voltage, capacity and size — we'll engineer it.</p>
+            <article key={a.title} role="listitem" className={`acc-p${open === i ? ' on' : ''}`}
+              onMouseEnter={() => setOpen(i)} onFocus={() => setOpen(i)} onClick={() => setOpen(i)} tabIndex={0}>
+              <div className="acc-img" style={{ backgroundImage: `url("${a.img}")` }} />
+              <span className="acc-n">{String(i + 1).padStart(2, '0')}</span>
+              <h3 className="acc-v">{a.title}</h3>
+              <div className="acc-body">
+                <h3>{a.title}</h3>
+                <p>{a.text}</p>
+                <div className="acc-chips">{a.chips.map((c) => <span key={c}>{c}</span>)}</div>
+                {a.go
+                  ? <a className="btn btn-y sm" href="#products" onClick={() => onPick(a.go)}>View batteries <span className="ar">→</span></a>
+                  : <a className="btn btn-y sm" href="#contact">Enquire <span className="ar">→</span></a>}
               </div>
-              <span className="btn sm">Start a project <span className="ar">→</span></span>
-            </div>
-          </a>
+            </article>
+          ))}
         </div>
+        <a href="#contact" className="custom-line rv">
+          <span className="cl-k">Custom engineering</span>
+          <span className="cl-t">Need a custom pack? Tell us your voltage, capacity and size — we'll engineer it.</span>
+          <span className="cl-go" aria-hidden="true">→</span>
+        </a>
       </div>
     </section>
   );
@@ -89,45 +94,60 @@ export function Applications({ onPick }) {
 
 export function Process() {
   return (
-    <section id="process">
+    <section id="process" className="process">
       <div className="wrap">
-        <SectionHead n="06" label="How we build" title={<>From cell to <span className="grad">full power.</span></>}
-          lead="Every Litpax pack passes through our in-house production and testing line before it reaches you." />
-        <div className="proc-photo rv-img">
-          <div id="procImg" style={{ backgroundImage: `url("${PHOTOS.process}")` }} />
-          <div className="cap"><span>Sirsa, Haryana</span><b>Built and tested on our own line.</b></div>
-        </div>
-        <div className="steps" id="steps">
-          <div className="steps-line" aria-hidden="true"><i id="stepsFill" /></div>
-          {STEPS.map(([h, p], i) => (
-            <div className="step rv" key={h}>
-              <div className="step-n">0{i + 1}</div>
-              <h4>{h}</h4>
-              <p>{p}</p>
-            </div>
-          ))}
+        <SectionHead n="06" label="How we build" title={<>From cell to <mark>full power.</mark></>} />
+        <div className="proc">
+          <div className="proc-photo rv-img">
+            <div id="procImg" style={{ backgroundImage: `url("${PHOTOS.process}")` }} />
+            <span className="proc-tag">In-house line · Sirsa, Haryana</span>
+          </div>
+          <ol className="proc-steps" id="steps">
+            {STEPS.map(([h, p], i) => (
+              <li className="step rv" key={h}>
+                <span className="step-n">0{i + 1}</span>
+                <div><h4>{h}</h4><p>{p}</p></div>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
     </section>
   );
 }
 
+// One big quote at a time, auto-advancing; arrows and dots to navigate.
 export function Reviews() {
+  const [i, setI] = useState(0);
+  const n = REVIEWS.length;
+  useEffect(() => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const id = setTimeout(() => setI((x) => (x + 1) % n), 6500);
+    return () => clearTimeout(id);
+  }, [i, n]);
+  const [name, role, text] = REVIEWS[i];
   return (
-    <section id="reviews">
+    <section id="reviews" className="reviews">
       <div className="wrap">
-        <SectionHead n="08" label="Reviews" title={<>Trusted on the <span className="grad">road.</span></>} />
-        <div className="reviews">
-          {REVIEWS.map(([name, role, text]) => (
-            <figure className="rc rv" key={name}>
-              <div className="stars" aria-label="5 stars">★★★★★</div>
-              <p>“{text}”</p>
-              <figcaption className="who">
-                <span className="av">{name[0]}</span>
-                <div><b>{name}</b><span>{role}</span></div>
-              </figcaption>
-            </figure>
-          ))}
+        <SectionHead n="08" label="Reviews" title={<>Trusted on the <mark>road.</mark></>} />
+        <div className="quote rv">
+          <span className="q-mark" aria-hidden="true">“</span>
+          <blockquote key={i} aria-live="polite">
+            <p>{text}</p>
+            <footer><b>{name}</b><span>{role}</span><span className="q-stars" aria-label="5 stars">★★★★★</span></footer>
+          </blockquote>
+          <div className="q-nav">
+            <span className="q-count">{String(i + 1).padStart(2, '0')} / {String(n).padStart(2, '0')}</span>
+            <div className="q-bars">
+              {REVIEWS.map((r, k) => (
+                <button key={r[0]} className={k === i ? 'on' : ''} onClick={() => setI(k)} aria-label={`Review ${k + 1}`}>
+                  {k === i && <i key={i} />}
+                </button>
+              ))}
+            </div>
+            <button className="q-arrow" onClick={() => setI((i - 1 + n) % n)} aria-label="Previous review">←</button>
+            <button className="q-arrow" onClick={() => setI((i + 1) % n)} aria-label="Next review">→</button>
+          </div>
         </div>
       </div>
     </section>
@@ -136,17 +156,15 @@ export function Reviews() {
 
 export function Cta() {
   return (
-    <section style={{ paddingTop: 0 }}>
+    <section className="cta" id="dealer">
       <div className="wrap">
-        <div className="cta-card rv">
-          <div className="bg" style={{ backgroundImage: `url("${PHOTOS.cta}")` }} />
-          <div className="ambient" aria-hidden="true"><i /><i /><i /></div>
-          <div className="eyebrow"><span className="dot" />Dealership open</div>
-          <h2>Become a<br />Litpax dealer.</h2>
+        <span className="cta-k rv">Dealership open — across India</span>
+        <h2 className="cta-t rv">Become a<br />Litpax dealer.</h2>
+        <div className="cta-row rv">
           <p>Competitive pricing, flexible bulk orders and pan-India service support. Grow with a Made-in-India battery brand.</p>
-          <div className="row">
-            <a className="btn btn-light" href={waLink('Hi Litpax, I am interested in dealership.')} target="_blank" rel="noopener">Apply for dealership <span className="ar">→</span></a>
-            <a className="btn btn-ghost" href="#contact">Talk to sales</a>
+          <div className="cta-btns">
+            <a className="btn btn-k" href={waLink('Hi Litpax, I am interested in dealership.')} target="_blank" rel="noopener">Apply for dealership <span className="ar">→</span></a>
+            <a className="btn btn-line-k" href="#contact">Talk to sales</a>
           </div>
         </div>
       </div>

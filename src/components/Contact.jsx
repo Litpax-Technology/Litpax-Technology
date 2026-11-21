@@ -40,11 +40,11 @@ export default function Contact() {
   const cls = (k) => `fld${err[k] ? ' err' : f[k] && k !== 'type' ? ' ok' : ''}`;
 
   return (
-    <section className="contact alt" id="contact">
+    <section className="contact" id="contact">
       <div className="wrap">
         <div>
-          <div className="eyebrow rv"><span className="dot" /><span className="num">10 /</span>Contact</div>
-          <h2 className="rv">Let's talk <span className="grad">power.</span></h2>
+          <div className="sx-meta rv"><span className="sx-n">10</span><span className="sx-l">Contact</span><span className="sx-rule" aria-hidden="true" /></div>
+          <h2 className="contact-t rv">Let's talk <mark>power.</mark></h2>
           <div className="c-rows">
             <Row label="Toll free" href={`tel:${CONTACT.tollFree.tel}`}><a href={`tel:${CONTACT.tollFree.tel}`}>{CONTACT.tollFree.label}</a></Row>
             <Row label="Sales enquiry" href={`tel:${CONTACT.sales.tel}`}><a href={`tel:${CONTACT.sales.tel}`}>{CONTACT.sales.label}</a></Row>
@@ -79,7 +79,7 @@ export default function Contact() {
             </div>
           </div>
           <div className="fld"><textarea id="fm" placeholder=" " value={f.req} onChange={set('req')} /><label htmlFor="fm">Requirement (e.g. 60V 30Ah × 10)</label></div>
-          <button className="btn btn-primary" type="submit">Send enquiry on WhatsApp <span className="ar">→</span></button>
+          <button className="btn btn-y" type="submit">Send enquiry on WhatsApp <span className="ar">→</span></button>
           {sent && <p className="form-ok" role="status">✓ WhatsApp opened with your enquiry — just tap send.</p>}
         </form>
       </div>

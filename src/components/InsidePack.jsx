@@ -74,7 +74,7 @@ export default function InsidePack() {
       const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 60);
 
       const key = new THREE.DirectionalLight('#fff3e6', 2.2); key.position.set(-4, 6, 5); scene.add(key);
-      const rim = new THREE.DirectionalLight('#6366F1', 2.6); rim.position.set(5, 2, -4); scene.add(rim);
+      const rim = new THREE.DirectionalLight('#8B5CF6', 2.6); rim.position.set(5, 2, -4); scene.add(rim);
       const fill = new THREE.DirectionalLight('#9fb7ff', 0.6); fill.position.set(3, -1, 4); scene.add(fill);
 
       // ----- dimensions -----
@@ -105,7 +105,7 @@ export default function InsidePack() {
       }
 
       // glowing outline that appears in x-ray mode
-      const edgeMat = new THREE.LineBasicMaterial({ color: '#60A5FA', transparent: true, opacity: 0 });
+      const edgeMat = new THREE.LineBasicMaterial({ color: '#A5B4FC', transparent: true, opacity: 0 });
       const edges = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(W, BH, D)), edgeMat);
       edges.position.y = BH / 2;
       pack.add(edges);
@@ -260,7 +260,7 @@ export default function InsidePack() {
       <div className={`xp-canvas${ready ? ' on' : ''}`} ref={host} aria-hidden="true" />
       <div className="xp-ui wrap">
         <div className="xp-copy">
-          <div className="eyebrow"><span className="dot" /><span className="num">02 /</span>Inside the pack</div>
+          <div className="sx-meta"><span className="sx-n">02</span><span className="sx-l">Inside the pack</span></div>
           <div className="xp-step" key={step}>
             <span className="xp-k">0{step + 1} — {s.k}</span>
             <h2>{s.h}</h2>

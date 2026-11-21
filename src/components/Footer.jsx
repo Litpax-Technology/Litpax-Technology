@@ -8,31 +8,32 @@ const WaIcon = ({ size = 17, fill = 'currentColor' }) => (
 export default function Footer() {
   return (
     <>
-      <footer data-theme="dark">
+      <footer className="foot" data-theme="dark">
         <div className="wrap">
           <div className="f-top">
-            <div>
+            <div className="f-brand">
               <Logo />
               <p>ISO 9001:2015 certified manufacturer of Lithium-ion &amp; LFP battery packs. Proudly Made in India.</p>
-              <div className="soc">
-                <a href={CONTACT.facebook} target="_blank" rel="noopener" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M14 8h3V4h-3a5 5 0 0 0-5 5v2H7v4h2v7h4v-7h3l1-4h-4V9a1 1 0 0 1 1-1z" /></svg></a>
-                <a href={CONTACT.instagram} target="_blank" rel="noopener" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" /></svg></a>
-                <a href={`https://wa.me/${CONTACT.whatsapp}`} target="_blank" rel="noopener" aria-label="WhatsApp"><WaIcon size={16} /></a>
-              </div>
+              <a className="f-tel" href={`tel:${CONTACT.tollFree.tel}`}>{CONTACT.tollFree.label}<small>Toll free · {CONTACT.hours}</small></a>
             </div>
             <div><h5>Products</h5><ul><li><a href="#products">E-Bike battery</a></li><li><a href="#products">E-Rickshaw battery</a></li><li><a href="#products">Solar / Inverter</a></li><li><a href="#applications">Medical &amp; Telecom</a></li></ul></div>
             <div><h5>Company</h5><ul><li><a href="#about">About us</a></li><li><a href="#process">Process</a></li><li><a href="#reviews">Reviews</a></li><li><a href="#faq">FAQ</a></li></ul></div>
-            <div><h5>Contact</h5><ul><li><a href={`tel:${CONTACT.tollFree.tel}`}>{CONTACT.tollFree.label}</a></li><li><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></li><li>{CONTACT.hours}</li><li><a href={CONTACT.shop} target="_blank" rel="noopener">Online shop ↗</a></li></ul></div>
+            <div><h5>Connect</h5><ul>
+              <li><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></li>
+              <li><a href={CONTACT.shop} target="_blank" rel="noopener">Online shop ↗</a></li>
+              <li><a href={CONTACT.facebook} target="_blank" rel="noopener">Facebook ↗</a></li>
+              <li><a href={CONTACT.instagram} target="_blank" rel="noopener">Instagram ↗</a></li>
+            </ul></div>
           </div>
-          <div className="f-word" aria-hidden="true">LITPAX</div>
-          <div className="f-bot">
-            <span>© {new Date().getFullYear()} Litpax Technology. All rights reserved.</span>
-            <span>Sirsa, Haryana, India</span>
-          </div>
+        </div>
+        <div className="f-word" aria-hidden="true">LITPAX</div>
+        <div className="wrap f-bot">
+          <span>© {new Date().getFullYear()} Litpax Technology. All rights reserved.</span>
+          <span>Sirsa, Haryana, India</span>
         </div>
       </footer>
       <a className="wa" href={waLink('Hi Litpax, I want to enquire about lithium batteries.')} target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
-        <WaIcon size={28} fill="#fff" />
+        <WaIcon size={26} fill="#fff" />
       </a>
     </>
   );
