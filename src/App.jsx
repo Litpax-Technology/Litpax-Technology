@@ -78,9 +78,6 @@ export default function App() {
 
       // CTA headline slides in from the side
       gsap.fromTo('.cta-t', { xPercent: -8 }, { xPercent: 0, ease: 'none', scrollTrigger: { trigger: '.cta', start: 'top bottom', end: 'top 30%', scrub: true } });
-
-      // footer wordmark rises
-      gsap.fromTo('.f-word', { yPercent: 40 }, { yPercent: 0, ease: 'none', scrollTrigger: { trigger: '.foot', start: 'top bottom', end: 'bottom bottom', scrub: true } });
     }, root);
 
     // ---------- reveal on scroll: IntersectionObserver, independent of layout shifts ----------
