@@ -21,7 +21,7 @@
 .brand span{font-size:30px;font-weight:800;letter-spacing:-.04em;color:#A1A1AA;transition:color .4s,transform .5s var(--spring)}
 .brand:hover span{color:var(--text);transform:scale(1.08)}
 /* real logos, transparent background */
-.brand img{position:relative;z-index:1;width:76%;height:62%;object-fit:contain;transition:transform .5s var(--spring)}
+.brand img{position:relative;z-index:1;display:block;width:74%;height:60%;object-fit:contain;object-position:center;transition:transform .5s var(--spring)}
 .brand:hover img{transform:scale(1.08)}
 .brand.dark{background:#27272A;border-color:#27272A}
 .brand.dark:hover{background:#18181B;border-color:#18181B}

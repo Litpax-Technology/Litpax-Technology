@@ -139,16 +139,16 @@ export const STATS = [
   [20, 'Service centers'],
 ];
 
-// Brands that use Litpax packs. Logos in /public/brands/ are the real logos
-// with a transparent background. tile: 'dark' for logos with white lettering,
-// 'light' for colourful/dark logos — so every logo stays readable.
+// Brands that use Litpax packs. Logos in /public/brands/ are the real logos with
+// a transparent background; white lettering was turned graphite so every logo
+// reads on the light tiles (brand colours are kept).
 export const BRANDS = [
-  { name: 'Zelio', logo: `${BASE}brands/zelio.png`, tile: 'dark' },
-  { name: 'Yakuza', logo: `${BASE}brands/yakuza.png`, tile: 'light' },
-  { name: 'Warivo', logo: `${BASE}brands/warivo.png`, tile: 'dark' },
-  { name: 'Evey', logo: `${BASE}brands/evey.png`, tile: 'light' },
-  { name: 'Worzo', logo: `${BASE}brands/worzo.png`, tile: 'dark' },
-  { name: 'Urban eBikes', logo: `${BASE}brands/urban-ebikes.png`, tile: 'dark' },
+  { name: 'Zelio', logo: `${BASE}brands/zelio.png` },
+  { name: 'Yakuza', logo: `${BASE}brands/yakuza.png` },
+  { name: 'Warivo', logo: `${BASE}brands/warivo.png` },
+  { name: 'Evey', logo: `${BASE}brands/evey.png` },
+  { name: 'Worzo', logo: `${BASE}brands/worzo.png` },
+  { name: 'Urban eBikes', logo: `${BASE}brands/urban-ebikes.png` },
 ];
 
 // Certificates. Put a scan/photo in /public/certificates/ and set img to show a
