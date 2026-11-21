@@ -7,7 +7,7 @@ import 'lenis/dist/lenis.css';
 import Header from './components/Header.jsx';
 import Hero from './components/Hero.jsx';
 import { About, Applications, Brands, Certifications, Cta, Process, Reviews, Ticker } from './components/Sections.jsx';
-import InsidePack from './components/InsidePack.jsx';
+import PackTour from './components/PackTour.jsx';
 import Products from './components/Products.jsx';
 import BatteryFinder from './components/BatteryFinder.jsx';
 import Why from './components/Why.jsx';
@@ -117,7 +117,7 @@ export default function App() {
         <Ticker />
         <Brands />
         <About />
-        <InsidePack />
+        <PackTour />
         <Applications onPick={setFilter} />
         <Products filter={filter} setFilter={setFilter} onOpen={setQuick} />
         <BatteryFinder />

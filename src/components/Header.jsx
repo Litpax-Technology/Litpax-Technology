@@ -73,7 +73,7 @@ export default function Header() {
             <a className="btn btn-ghost sm hide-m" href={CONTACT.shop} target="_blank" rel="noopener">Shop</a>
             <a className="btn btn-primary sm" href="#contact">Get a quote</a>
             <button className="burger" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="mnav" onClick={() => setOpen(!open)}>
-              <span /><span />
+              <span /><span /><span />
             </button>
           </div>
         </div>

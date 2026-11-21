@@ -176,7 +176,7 @@ export function Cta() {
 export function Brands() {
   const row = [...BRANDS, ...BRANDS, ...BRANDS];
   const Item = ({ b }) => (
-    <div className={`brand${b.logo ? ' has-logo' : ''}`} style={b.bg ? { '--logo-bg': b.bg } : undefined} title={b.name}>
+    <div className={`brand${b.tile === 'dark' ? ' dark' : ''}`} title={b.name}>
       {b.logo ? <img src={b.logo} alt={b.name} loading="lazy" decoding="async" /> : <span>{b.name}</span>}
     </div>
   );
