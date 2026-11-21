@@ -1,10 +1,10 @@
 /* ===== Inside the pack — pinned 3D exploded view ===== */
-.xp{position:relative;height:100vh;height:100svh;padding:0;overflow:hidden;color:#fff;background:#0B1020}
+.xp{position:relative;height:100vh;height:100svh;padding:0;overflow:hidden;color:#fff;background:#27272A}
 .xp-bg{position:absolute;inset:0;pointer-events:none;
   background:
-    radial-gradient(800px 560px at 68% 52%,rgba(139,92,246,.25),transparent 62%),
-    radial-gradient(600px 400px at 70% 85%,rgba(6,182,212,.16),transparent 65%),
-    linear-gradient(180deg,#121933 0%,#0B1020 100%)}
+    radial-gradient(800px 560px at 68% 52%,rgba(229,72,77,.25),transparent 62%),
+    radial-gradient(600px 400px at 70% 85%,rgba(82,82,91,.16),transparent 65%),
+    linear-gradient(180deg,#3F3F46 0%,#27272A 100%)}
 /* fine engineering grid, fading to the edges */
 .xp-bg::after{content:"";position:absolute;inset:0;
   background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
@@ -36,7 +36,7 @@
 .xp-rail li span{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.14);font-size:11px;transition:.5s cubic-bezier(.16,1,.3,1)}
 .xp-rail li.done{color:rgba(255,255,255,.55)}
 .xp-rail li.on{color:#fff}
-.xp-rail li.on span{background:var(--y);border-color:var(--y);box-shadow:0 0 0 6px rgba(139,92,246,.25)}
+.xp-rail li.on span{background:var(--y);border-color:var(--y);box-shadow:0 0 0 6px rgba(229,72,77,.25)}
 
 .xp-hint{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);z-index:2;font-size:11px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.35)}
 
@@ -45,7 +45,7 @@
   .xp-rail,.xp-hint{display:none}
   .xp-step h2{font-size:clamp(32px,8vw,44px)}
   .xp-step p{font-size:15px;margin-bottom:18px}
-  .xp-copy{background:linear-gradient(0deg,rgba(11,16,32,.94) 55%,transparent);margin:0 -32px;padding:60px 32px 0}
+  .xp-copy{background:linear-gradient(0deg,rgba(39,39,42,.94) 55%,transparent);margin:0 -32px;padding:60px 32px 0}
   .xp-canvas{bottom:30%}
 }
 @media (prefers-reduced-motion: reduce){ .xp{height:auto;min-height:100vh} .xp-step{animation:none} }
