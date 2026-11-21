@@ -21,7 +21,7 @@ export const CONTACT = {
   service: { label: '98967 82922', tel: '+919896782922' },
   email: 'info@litpaxtechnology.com',
   whatsapp: '919729082922',
-  address: '72B HSIIDC Industrial Area, Hisar Road, Sirsa – 125055',
+  address: '72B HSIIDC Industrial Area, Hisar Road, Sirsa, Haryana – 125055, India',
   map: 'https://maps.app.goo.gl/36sWwxA22g44bRge8',
   hours: 'Mon–Sat · 9 AM – 7 PM',
   shop: 'https://shop.litpaxtechnology.com',
@@ -138,3 +138,25 @@ export const STATS = [
   [20, 'Distributors in India'],
   [20, 'Service centers'],
 ];
+
+// Brands that use Litpax packs. Logos live in /public/brands/.
+// bg = the logo's own background colour, so each tile blends with its logo.
+export const BRANDS = [
+  { name: 'Zelio', logo: `${BASE}brands/zelio.png`, bg: '#0D0D0D' },
+  { name: 'Warivo', logo: `${BASE}brands/warivo.png`, bg: '#000000' },
+  { name: 'Yakuza', logo: `${BASE}brands/yakuza.png`, bg: '#FFFFFF' },
+  { name: 'Evey', logo: `${BASE}brands/evey.png`, bg: '#FFFFFF' },
+  { name: 'Worzo', logo: `${BASE}brands/worzo.png`, bg: '#1E1E1E' },
+  { name: 'Urban eBikes', logo: `${BASE}brands/urban-ebikes.png`, bg: '#898E89' },
+];
+
+// Certificates. Put a scan/photo in /public/certificates/ and set img to show a
+// "View certificate" button. Edit the text to match each certificate exactly.
+export const CERTS = [
+  { name: 'ISO 9001:2015', by: 'Quality Management System', note: 'Certified manufacturing and testing processes.', img: null },
+  { name: 'IndiaMART', by: 'IndiaMART certificate', note: 'Certificate issued by IndiaMART, the B2B marketplace.', img: null },
+  { name: 'ESCPL', by: 'ESCPL certificate', note: 'Certificate issued by ESCPL.', img: null },
+];
+
+// Google Maps embed for the factory (uses the address above)
+export const MAP_EMBED = `https://www.google.com/maps?q=${encodeURIComponent('Litpax Technology, ' + CONTACT.address)}&output=embed`;

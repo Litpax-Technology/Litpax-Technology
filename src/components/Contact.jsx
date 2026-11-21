@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CONTACT, waLink } from '../data.js';
+import { CONTACT, MAP_EMBED, waLink } from '../data.js';
 
 const OPTIONS = ['E-Bike / E-Scooter', 'E-Rickshaw', 'E-Cycle', 'Solar / Inverter', 'Medical Application', 'Telecom / Portable', 'Dealership'];
 
@@ -43,7 +43,7 @@ export default function Contact() {
     <section className="contact" id="contact">
       <div className="wrap">
         <div>
-          <div className="sx-meta rv"><span className="sx-n">10</span><span className="sx-l">Contact</span><span className="sx-rule" aria-hidden="true" /></div>
+          <div className="sx-meta rv"><span className="sx-n">11</span><span className="sx-l">Contact</span><span className="sx-rule" aria-hidden="true" /></div>
           <h2 className="contact-t rv">Let's talk <mark>power.</mark></h2>
           <div className="c-rows">
             <Row label="Toll free" href={`tel:${CONTACT.tollFree.tel}`}><a href={`tel:${CONTACT.tollFree.tel}`}>{CONTACT.tollFree.label}</a></Row>
@@ -82,6 +82,23 @@ export default function Contact() {
           <button className="btn btn-y" type="submit">Send enquiry on WhatsApp <span className="ar">→</span></button>
           {sent && <p className="form-ok" role="status">✓ WhatsApp opened with your enquiry — just tap send.</p>}
         </form>
+
+        <div className="map-card rv">
+          <div className="map-info">
+            <span className="map-k">Visit our factory</span>
+            <h3>Litpax Technology, Sirsa</h3>
+            <p>{CONTACT.address}</p>
+            <p className="map-hours">{CONTACT.hours}</p>
+            <div className="map-btns">
+              <a className="btn btn-y sm" href={CONTACT.map} target="_blank" rel="noopener">Get directions <span className="ar">→</span></a>
+              <a className="btn btn-line sm" href={`tel:${CONTACT.tollFree.tel}`}>Call us</a>
+            </div>
+          </div>
+          <div className="map-frame">
+            <iframe title="Litpax Technology factory location on Google Maps" src={MAP_EMBED} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen />
+            <span className="map-pin" aria-hidden="true"><i /></span>
+          </div>
+        </div>
       </div>
     </section>
   );

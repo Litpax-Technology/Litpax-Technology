@@ -1,7 +1,7 @@
 // Page sections (Industrial Editorial design): shared section header,
 // tape ticker, about, applications accordion, process, reviews slider, CTA.
 import { useEffect, useState } from 'react';
-import { APPLICATIONS, PHOTOS, REVIEWS, STATS, STEPS, waLink } from '../data.js';
+import { APPLICATIONS, BRANDS, CERTS, PHOTOS, REVIEWS, STATS, STEPS, waLink } from '../data.js';
 
 export function SectionHead({ n, label, title, lead }) {
   return (
@@ -129,7 +129,7 @@ export function Reviews() {
   return (
     <section id="reviews" className="reviews">
       <div className="wrap">
-        <SectionHead n="08" label="Reviews" title={<>Trusted on the <mark>road.</mark></>} />
+        <SectionHead n="09" label="Reviews" title={<>Trusted on the <mark>road.</mark></>} />
         <div className="quote rv">
           <span className="q-mark" aria-hidden="true">“</span>
           <blockquote key={i} aria-live="polite">
@@ -166,6 +166,60 @@ export function Cta() {
             <a className="btn btn-k" href={waLink('Hi Litpax, I am interested in dealership.')} target="_blank" rel="noopener">Apply for dealership <span className="ar">→</span></a>
             <a className="btn btn-line-k" href="#contact">Talk to sales</a>
           </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// "Trusted by" — brand logos (or wordmarks) slide past in an endless loop.
+export function Brands() {
+  const row = [...BRANDS, ...BRANDS, ...BRANDS];
+  const Item = ({ b }) => (
+    <div className={`brand${b.logo ? ' has-logo' : ''}`} style={b.bg ? { '--logo-bg': b.bg } : undefined} title={b.name}>
+      {b.logo ? <img src={b.logo} alt={b.name} loading="lazy" decoding="async" /> : <span>{b.name}</span>}
+    </div>
+  );
+  return (
+    <section className="brands" id="brands" aria-label="Brands that trust Litpax">
+      <div className="wrap brands-head rv">
+        <span className="brands-k">Trusted by leading EV brands</span>
+        <span className="brands-line" aria-hidden="true" />
+        <span className="brands-n"><b>{BRANDS.length}+</b> brand partners</span>
+      </div>
+      <div className="brands-belt">
+        <div className="brands-track">
+          {[0, 1].map((k) => <div className="brands-set" key={k} aria-hidden={k === 1}>{row.map((b, i) => <Item b={b} key={`${k}-${i}`} />)}</div>)}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Certifications — cards; a certificate image (if provided) opens in a new tab.
+const CertIcon = () => (
+  <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <circle cx="12" cy="9" r="6" /><path d="m9.5 9 1.8 1.8L14.8 7.3" /><path d="m8.5 14-1.5 8 5-3 5 3-1.5-8" />
+  </svg>
+);
+export function Certifications() {
+  return (
+    <section className="certs" id="certifications">
+      <div className="wrap">
+        <SectionHead n="08" label="Certifications" title={<>Certified. <mark>Verified.</mark> Trusted.</>}
+          lead="Our processes and business are certified by recognised bodies — so every pack you buy meets a proven standard." />
+        <div className="cert-grid">
+          {CERTS.map((c, i) => (
+            <article className="cert rv" key={c.name} style={{ transitionDelay: `${i * 90}ms` }}>
+              <div className="cert-seal"><CertIcon /><span className="cert-ring" aria-hidden="true" /></div>
+              <span className="cert-by">{c.by}</span>
+              <h3>{c.name}</h3>
+              <p>{c.note}</p>
+              {c.img
+                ? <a className="cert-view" href={c.img} target="_blank" rel="noopener">View certificate <span>→</span></a>
+                : <span className="cert-ok"><i />Verified</span>}
+            </article>
+          ))}
         </div>
       </div>
     </section>

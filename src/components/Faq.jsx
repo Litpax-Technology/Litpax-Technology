@@ -7,7 +7,7 @@ export default function Faq() {
   return (
     <section className="faq" id="faq">
       <div className="wrap">
-        <SectionHead n="09" label="FAQ" title={<>Questions, <mark>answered.</mark></>} lead="Still unsure? Our team is one WhatsApp message away." />
+        <SectionHead n="10" label="FAQ" title={<>Questions, <mark>answered.</mark></>} lead="Still unsure? Our team is one WhatsApp message away." />
       <div className="faq-in">
         <div className="faq-left">
           <p className="faq-note rv">Can't find your answer? Ask us directly — we usually reply within minutes during working hours.</p>
