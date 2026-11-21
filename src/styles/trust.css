@@ -3,29 +3,23 @@
    (uses the tokens and keyframes from site.css)
    ===================================================================== */
 
-/* ---------- Trusted by: brand belt ---------- */
-.brands{padding:96px 0 40px}
-.brands-head{display:flex;align-items:center;gap:18px;margin-bottom:30px}
+/* ---------- Trusted by: brand belt (bare logos, no cards) ---------- */
+.brands{padding:96px 0 48px}
+.brands-head{display:flex;align-items:center;gap:18px;margin-bottom:36px}
 .brands-k{font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a1);white-space:nowrap}
 .brands-line{flex:1;height:1px;background:linear-gradient(90deg,var(--line-2),transparent)}
 .brands-n{font-size:14px;color:var(--mute);white-space:nowrap}
 .brands-n b{color:var(--text);font-weight:800}
-.brands-belt{position:relative;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
-.brands-track{display:flex;width:max-content;animation:tick 30s linear infinite}
+.brands-belt{position:relative;overflow:hidden;padding:10px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.brands-track{display:flex;width:max-content;animation:tick 32s linear infinite}
 .brands-belt:hover .brands-track{animation-play-state:paused}
-.brands-set{display:flex;gap:16px;padding-right:16px}
-.brand{position:relative;flex:none;width:240px;height:116px;display:grid;place-items:center;border-radius:20px;background:var(--bg-2);border:1px solid var(--line);overflow:hidden;transition:transform .5s var(--spring),box-shadow .5s,background .4s,border-color .4s}
-.brand::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.8) 50%,transparent 70%);transform:translateX(-120%);transition:transform .9s var(--ease)}
-.brand:hover{transform:translateY(-6px);background:#fff;border-color:rgba(229,72,77,.3);box-shadow:var(--shadow)}
-.brand:hover::after{transform:translateX(120%)}
-.brand span{font-size:30px;font-weight:800;letter-spacing:-.04em;color:#A1A1AA;transition:color .4s,transform .5s var(--spring)}
-.brand:hover span{color:var(--text);transform:scale(1.08)}
-/* real logos, transparent background */
-.brand img{position:relative;z-index:1;display:block;width:74%;height:60%;object-fit:contain;object-position:center;transition:transform .5s var(--spring)}
-.brand:hover img{transform:scale(1.08)}
-.brand.dark{background:#27272A;border-color:#27272A}
-.brand.dark:hover{background:#18181B;border-color:#18181B}
-.brand.dark::after{background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.12) 50%,transparent 70%)}
+.brands-set{display:flex;align-items:center;gap:72px;padding-right:72px}
+/* fixed box: every logo fits inside it, never cropped */
+.brand{flex:none;width:220px;height:84px;display:flex;align-items:center;justify-content:center;transition:transform .5s var(--spring)}
+.brand img{display:block;width:100%;height:100%;object-fit:contain;filter:saturate(.9);transition:filter .4s}
+.brand:hover{transform:translateY(-4px) scale(1.08)}
+.brand:hover img{filter:saturate(1.15) drop-shadow(0 8px 14px rgba(39,39,42,.18))}
+.brand span{font-size:28px;font-weight:800;letter-spacing:-.04em;color:#A1A1AA}
 
 /* ---------- Certifications ---------- */
 .certs{background:var(--bg)}
@@ -74,7 +68,8 @@
   .brands{padding:72px 0 24px}
   .brands-head{flex-wrap:wrap;gap:8px 14px}
   .brands-line{display:none}
-  .brand{width:160px;height:84px;border-radius:16px}
+  .brand{width:140px;height:56px}
+  .brands-set{gap:44px;padding-right:44px}
   .brand span{font-size:22px}
   .cert-grid{grid-template-columns:1fr}
   .cert{padding:24px}
