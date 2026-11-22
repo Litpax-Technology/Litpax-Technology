@@ -81,14 +81,14 @@ export default function Header() {
             <ul>
               <li className={`hd-ind${ind ? ' on' : ''}${hover ? ' hov' : ''}`} aria-hidden="true" style={ind ? { transform: `translateX(${ind.x}px)`, width: ind.w } : undefined} />
               {LINKS.map(([href, label]) => <li key={href}><a href={href} onMouseEnter={() => setHover(href)} onFocus={() => setHover(href)} onBlur={() => setHover('')} className={active === href ? 'active' : ''} aria-current={active === href ? 'true' : undefined}>{label}</a></li>)}
+              <li><a href={CONTACT.shop} target="_blank" rel="noopener" className="hd-shop" onMouseEnter={() => setHover('')}>Shop ↗</a></li>
             </ul>
           </nav>
           <div className="hd-act">
-            <a className="hd-call hide-m" href={`tel:${CONTACT.tollFree.tel}`} aria-label={`Call toll free ${CONTACT.tollFree.label}`} title={`Toll free · ${CONTACT.tollFree.label}`}>
-              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>
+            <a className="hd-cta" href="#contact">
+              <span className="hd-cta-l">Get a quote</span>
+              <span className="hd-cta-c" aria-hidden="true"><svg viewBox="0 0 11.8536 11.8536" fill="none" stroke="currentColor" strokeWidth="1"><path d="M11.3536 11.5V0.5H0.353553M11.3536 0.5L0.353553 11.5" /></svg></span>
             </a>
-            <a className="btn btn-ghost sm hide-m" href={CONTACT.shop} target="_blank" rel="noopener">Shop</a>
-            <a className="btn btn-primary sm hd-quote" href="#contact">Get a quote <span className="ar" aria-hidden="true">→</span></a>
             <button className="burger" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="mnav" onClick={() => setOpen(!open)}>
               <span /><span /><span />
             </button>
