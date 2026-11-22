@@ -159,7 +159,7 @@ export function Cta() {
     <section className="cta" id="dealer">
       <div className="wrap">
         <span className="cta-k rv">Dealership open — across India</span>
-        <h2 className="cta-t rv">Become a<br />Litpax dealer.</h2>
+        <h2 className="cta-t rv">Become a<br /><span className="it">Litpax dealer.</span></h2>
         <div className="cta-row rv">
           <p>Competitive pricing, flexible bulk orders and pan-India service support. Grow with a Made-in-India battery brand.</p>
           <div className="cta-btns">

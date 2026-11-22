@@ -15,7 +15,6 @@ import Faq from './components/Faq.jsx';
 import Contact from './components/Contact.jsx';
 import Footer from './components/Footer.jsx';
 import ProductModal from './components/ProductModal.jsx';
-import Loader from './components/Loader.jsx';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -50,15 +49,6 @@ export default function App() {
     document.addEventListener('click', onAnchor);
 
     const ctx = gsap.context(() => {
-      // ---------- hero intro ----------
-      gsap.timeline({ delay: 1.55 })   // starts as the loader curtain lifts
-        .from('.hero h1 .ln>span', { yPercent: 110, duration: 1.3, stagger: 0.09, ease: 'expo.out' })
-        .from('.h-in', { y: 24, opacity: 0, duration: 1.1, stagger: 0.08, ease: 'expo.out' }, '-=1.05')
-        .from('.h-stage', { opacity: 0, scale: 0.94, duration: 1.6, ease: 'expo.out' }, 0.2);
-
-      // hero headline drifts apart as you leave
-      gsap.to('.hero-title .l1', { xPercent: -6, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
-      gsap.to('.hero-title .l3', { xPercent: 6, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
 
 
       // ---------- counters ----------
@@ -109,7 +99,6 @@ export default function App() {
 
   return (
     <div ref={root}>
-      <Loader />
       <Header />
       <main>
         <Hero />

@@ -1,0 +1,111 @@
+/* =====================================================================
+   HERO — floating 3D models, cursor "charge" reveal, pixel preloader
+   Sizes are design px: 1 u = min(100vw/1440, 100svh/760) on desktop,
+   min(100vw/415, 100svh/760) below 1024px.
+   ===================================================================== */
+.hx{
+  --u:min(100vw / 1440, 100svh / 760);
+  --g0:#F4F4F5; --g1:#D4D4D8; --g2:#A1A1AA; --g3:#71717A; --g4:#3F3F46;
+  --red:#E5484D; --red-ink:#FFFFFF;
+  --glass:rgba(255,255,255,.06); --glass-strong:rgba(255,255,255,.15);
+  --edge:rgba(255,255,255,.75); --edge-soft:rgba(255,255,255,.12);
+  --serif:'Instrument Serif',Georgia,serif;
+  --isans:'Instrument Sans',var(--sans);
+  --edge-x:calc(28 * var(--u));
+  --body-size:calc(20 * var(--u)); --body-leading:calc(22 * var(--u));
+  --hx-ease:cubic-bezier(.22,1,.36,1);
+}
+section.hx{
+  position:relative;height:100svh;min-height:0;padding:0;overflow:hidden;isolation:isolate;color:#fff;
+  background:radial-gradient(ellipse 100% 100% at 50% 100%,var(--g0) 0%,var(--g1) 27.5%,var(--g2) 55%,var(--g3) 77.5%,var(--g4) 100%) var(--g4);
+}
+.hx-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.hx-probe{position:absolute;width:calc(100 * var(--u));height:1px;visibility:hidden;pointer-events:none}
+.hx>*:not(.hx-canvas):not(.hx-cursor){z-index:1}
+
+/* 3D stage: WebGL renders here hidden; the 2D canvas shows it (graphite + colour under the cursor) */
+.hx-stage{position:absolute;left:calc(50% - 300 * var(--u));width:calc(760 * var(--u));top:calc(215 * var(--u));bottom:calc(64 * var(--u))}
+.hx-stage .battery3d{cursor:grab}
+.hx-stage.mirrored .battery3d canvas{opacity:0!important}
+.hx-stage.mirrored .battery3d-fallback{display:none}
+
+/* model switch: glass pill under the model */
+.hx-switch{position:absolute;left:calc(50% + 80 * var(--u));bottom:var(--edge-x);transform:translateX(-50%);display:flex;align-items:center;gap:4px;padding:4px;border-radius:99px;background:rgba(255,255,255,.55);backdrop-filter:blur(12px);box-shadow:0 10px 30px -14px rgba(39,39,42,.45),inset 0 0 0 1px rgba(255,255,255,.7);opacity:0;font-family:var(--isans)}
+.hx-switch button{position:relative;overflow:hidden;height:calc(36 * var(--u));min-height:30px;padding:0 calc(16 * var(--u));border:0;border-radius:99px;background:transparent;color:#3F3F46;font-size:calc(14 * var(--u));font-weight:500;letter-spacing:-.02em;white-space:nowrap;cursor:pointer;transition:background .3s var(--hx-ease),color .3s var(--hx-ease)}
+.hx-switch button:hover{background:rgba(39,39,42,.06)}
+.hx-switch button.on{background:#27272A;color:#fff}
+.hx-switch button i{position:absolute;left:14%;right:14%;bottom:4px;height:2px;border-radius:2px;background:#E5484D;transform-origin:left;animation:bar linear forwards}
+.hx-model{position:absolute;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%);font-size:calc(13 * var(--u));font-weight:500;letter-spacing:-.01em;color:#3F3F46;white-space:nowrap;pointer-events:none}
+.hx-cta span{display:inline-block;margin-left:8px;transition:transform .3s var(--hx-ease)}
+.hx-cta:hover span{transform:translateX(4px)}
+
+/* headline */
+.hx-h1{position:absolute;left:var(--edge-x);top:calc(114.5 * var(--u));display:flex;flex-direction:column;gap:calc(8 * var(--u));font-weight:400;opacity:0;text-shadow:0 2px 40px rgba(39,39,42,.18)}
+.hx-line{display:block;white-space:nowrap;line-height:1;text-box:trim-both cap alphabetic}
+.hx-serif{font-family:var(--serif);font-style:italic;font-size:calc(184 * var(--u));letter-spacing:-.06em}
+.hx-sans{font-family:var(--isans);font-size:calc(170 * var(--u));letter-spacing:-.06em}
+.hx-ch{display:inline-block;white-space:pre}
+.hx-serif .hx-ch:last-child{padding-right:.05em}
+
+/* body copy */
+.hx-lead,.hx-para{font-family:var(--isans);font-size:var(--body-size);line-height:var(--body-leading);font-weight:500;letter-spacing:-.02em;text-box:trim-both cap alphabetic;opacity:0}
+.hx-lead{position:absolute;top:calc(162 * var(--u));right:calc(34 * var(--u));width:calc(319 * var(--u))}
+.hx-act{position:absolute;right:var(--edge-x);bottom:calc(89 * var(--u));width:calc(325 * var(--u));display:flex;flex-direction:column;align-items:flex-start;gap:calc(28 * var(--u))}
+.hx-para{color:#27272A}
+.hx-cta{display:inline-flex;align-items:center;justify-content:center;width:calc(207 * var(--u));height:calc(61 * var(--u));border-radius:99px;background:var(--red);color:var(--red-ink);font-family:var(--isans);font-size:calc(18 * var(--u));font-weight:500;letter-spacing:-.04em;line-height:1;opacity:0;box-shadow:0 14px 30px -14px rgba(229,72,77,.8);transition:transform .2s var(--hx-ease),background .2s var(--hx-ease)}
+.hx-cta:hover{transform:scale(1.03);background:#D93A40}
+
+/* bottom bar */
+.hx-bar{position:absolute;left:var(--edge-x);right:var(--edge-x);bottom:var(--edge-x);display:flex;justify-content:space-between;align-items:center;font-family:var(--isans);font-size:calc(18 * var(--u));font-weight:400;letter-spacing:-.03em;line-height:1;color:#27272A;opacity:0}
+.hx-bar>*{white-space:nowrap}
+.hx-down{display:inline-flex;align-items:center;gap:calc(12 * var(--u))}
+.hx-arrow{display:grid;place-items:center;width:calc(33 * var(--u));height:calc(33 * var(--u));border-radius:50%;background:#27272A;color:#fff;font-size:calc(18 * var(--u));line-height:1;transition:transform .3s var(--hx-ease)}
+.hx-down:hover .hx-arrow{transform:translateY(3px)}
+
+/* preloader counter */
+.hx-count{position:absolute;right:calc(40 * var(--u));bottom:calc(38 * var(--u));display:block;white-space:nowrap;font-family:var(--isans);font-size:calc(170 * var(--u));font-weight:400;letter-spacing:-.06em;line-height:1;font-variant-numeric:tabular-nums;color:#27272A;text-box:trim-both cap alphabetic;pointer-events:none}
+.hx-pct{font-size:.25em;margin-left:.04em;letter-spacing:0}
+
+/* cursor disc (mouse only) */
+.hx-cursor{position:fixed;left:0;top:0;z-index:5;width:calc(40 * var(--u));height:calc(40 * var(--u));border-radius:50%;background:rgba(255,255,255,.5);box-shadow:0 0 0 1px rgba(39,39,42,.12);backdrop-filter:blur(4px);pointer-events:none;opacity:0;transition:opacity .2s linear;display:none}
+@media (hover:hover) and (pointer:fine){
+  .hx,.hx a,.hx button{cursor:none}
+  .hx-cursor{display:block}
+}
+
+@supports not (text-box: trim-both cap alphabetic){
+  .hx-serif{margin:-.12em 0 -.16em}
+  .hx-sans,.hx-count{margin:-.14em 0}
+  .hx-lead,.hx-para{margin-block:calc(var(--body-size) * .36 - var(--body-leading) / 2)}
+}
+
+/* ---- mobile / tablet (< 1024px): one column ---- */
+@media (max-width:1023px){
+  .hx{--u:min(100vw / 415, 100svh / 760);--edge-x:calc(20 * var(--u));--body-size:calc(16 * var(--u));--body-leading:calc(20 * var(--u))}
+  section.hx{background:radial-gradient(ellipse 263% 100% at 50% 100%,var(--g0) 0%,var(--g1) 15.9%,var(--g2) 31.8%,var(--g3) 58.4%,var(--g4) 85%) var(--g4)}
+  .hx-h1{right:var(--edge-x);top:calc(126.7 * var(--u))}
+  .hx-serif{font-size:calc(79.3 * var(--u))}
+  .hx-sans{font-size:calc(73.2 * var(--u))}
+  .hx-lead{left:var(--edge-x);right:var(--edge-x);width:auto;top:calc((126.7 + 79.3 * .72 + 8 + 73.2 * .72 + 28) * var(--u))}
+  .hx-act{left:var(--edge-x);right:var(--edge-x);width:auto;bottom:calc(98 * var(--u))}
+  .hx-cta{width:100%;height:calc(61 * var(--u));font-size:calc(18 * var(--u))}
+  .hx-bar{bottom:calc(20 * var(--u));font-size:calc(16 * var(--u))}
+  .hx-hide-s{display:none}
+  .hx-count{right:calc(20 * var(--u));bottom:calc(24 * var(--u));font-size:calc(73.2 * var(--u))}
+  .hx-stage{left:0;width:100%;top:calc(318 * var(--u));bottom:calc(296 * var(--u))}
+  .hx-switch{left:50%;bottom:calc(254 * var(--u))}
+  .hx-switch button{font-size:calc(13 * var(--u));padding:0 calc(14 * var(--u))}
+  .hx-model{display:none}
+}
+@media (max-width:1023px) and (max-height:740px){
+  .hx-para{display:none}
+  .hx-stage{bottom:calc(214 * var(--u))}
+  .hx-switch{bottom:calc(172 * var(--u))}
+}
+@media (prefers-reduced-motion:reduce){
+  .hx-count{display:none}
+}
+
+/* WhatsApp bubble waits until you scroll past the hero */
+.wa{transition:opacity .4s var(--ease),transform .5s var(--spring)}
+.at-hero .wa{opacity:0;transform:scale(.6);pointer-events:none}

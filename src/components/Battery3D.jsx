@@ -11,7 +11,12 @@ const INV_FRONT = `${BASE}model/inverter-front.webp`;   // solar inverter front 
 const LID_RATIO = 0.243;          // yellow lid share of the front photo's height
 
 // active: 0 = EV battery, 1 = solar inverter. Changing it plays a spin-and-swap transition.
-export default function Battery3D({ fallback, alt, active = 0 }) {
+// Optional hooks for the hero: onProgress(0..1) while loading, onReady(ok) once the first
+// frame is drawn (or loading failed), onFrame(canvas) right after every render, so the
+// frame can be copied before the browser clears the WebGL buffer.
+export default function Battery3D({ fallback, alt, active = 0, onProgress, onReady, onFrame }) {
+  const cb = useRef({});
+  cb.current = { onProgress, onReady, onFrame };
   const host = useRef(null);
   const target = useRef(active);
   const [failed, setFailed] = useState(false);
@@ -24,10 +29,12 @@ export default function Battery3D({ fallback, alt, active = 0 }) {
     (async () => {
       try {
         const THREE = await import('three');
+        cb.current.onProgress?.(0.4);
         const { RoundedBoxGeometry } = await import('three/examples/jsm/geometries/RoundedBoxGeometry.js');
         const { RoomEnvironment } = await import('three/examples/jsm/environments/RoomEnvironment.js');
         const { buildInverter } = await import('./inverterModel.js');
         if (cancelled || !host.current) return;
+        cb.current.onProgress?.(0.5);
         const el = host.current;
         const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -62,6 +69,7 @@ export default function Battery3D({ fallback, alt, active = 0 }) {
         const aniso = renderer.capabilities.getMaxAnisotropy();
         const frontSrc = await new THREE.TextureLoader().loadAsync(FRONT);
         frontSrc.colorSpace = THREE.SRGBColorSpace; frontSrc.anisotropy = aniso;
+        cb.current.onProgress?.(0.75);
         // body front = the HD label. The label covers the lower 92.5% of the body face; the strip
         // above it repeats the label's dark top edge (ClampToEdge), exactly like the real pack.
         const bodyFront = frontSrc;
@@ -154,6 +162,7 @@ export default function Battery3D({ fallback, alt, active = 0 }) {
         // second model: solar inverter, standing on the same floor
         const invFront = await new THREE.TextureLoader().loadAsync(INV_FRONT);
         invFront.colorSpace = THREE.SRGBColorSpace; invFront.anisotropy = aniso;
+        cb.current.onProgress?.(0.95);
         const inv = buildInverter(THREE, RoundedBoxGeometry, canvasTex, invFront);
         const floorBase = group.position.y - H / 2;
         inv.group.position.y = floorBase + inv.H / 2 + 0.05 - 0.05 / 2;
@@ -273,18 +282,22 @@ export default function Battery3D({ fallback, alt, active = 0 }) {
           [ring, ring2].forEach((r, i) => { const p = ((t * 0.35) + i * 0.5) % 1; r.scale.setScalar(0.6 + p * 0.9); r.material.opacity = 0.6 * (1 - p); });
           updateSparks(dt);
           renderer.render(scene, camera);
+          cb.current.onFrame?.(renderer.domElement);
           raf = requestAnimationFrame(loop);
         };
         if (reduce) {
           // no animation: swap instantly and draw one frame whenever the model changes
-          holder.rotation.y = -0.6; renderer.render(scene, camera);
+          const draw = () => { renderer.render(scene, camera); cb.current.onFrame?.(renderer.domElement); };
+          holder.rotation.y = -0.6; draw();
           const iv = setInterval(() => {
             if (target.current === cur) return;
-            models[cur].visible = false; cur = target.current; models[cur].visible = true; renderer.render(scene, camera);
+            models[cur].visible = false; cur = target.current; models[cur].visible = true; draw();
           }, 200);
           const prev = () => clearInterval(iv); reduceStop = prev;
         } else loop();
         setReady(true);
+        cb.current.onProgress?.(1);
+        cb.current.onReady?.(true);
 
         dispose = () => {
           cancelAnimationFrame(raf); io.disconnect(); ro.disconnect(); reduceStop();
@@ -295,6 +308,7 @@ export default function Battery3D({ fallback, alt, active = 0 }) {
       } catch (e) {
         console.warn('3D battery unavailable, showing photo instead:', e);
         setFailed(true);
+        cb.current.onReady?.(false);
       }
     })();
     return () => { cancelled = true; dispose(); };
