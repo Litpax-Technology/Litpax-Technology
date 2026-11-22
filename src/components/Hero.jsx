@@ -18,6 +18,12 @@ const MODELS = [
   { tab: 'Solar inverter', name: '1500W · 12V 120Ah' },
 ];
 const SWITCH_EVERY = 7000;
+// feature tags floating beside the model, per model
+const TAGS = [
+  [{ b: 'Smart BMS', s: 'Protected every ride' }, { b: '60V · 32Ah', s: 'Grade-A Li-ion cells' }],
+  [{ b: '1500W', s: 'Inverter output' }, { b: '12V · 120Ah', s: 'Lithium backup' }],
+];
+const STATS_HERO = [['200+', 'Happy clients'], ['20+', 'Service centres'], ['20+', 'Distributors'], ['50+', 'Expert staff']];
 
 // ---- preloader (1920 × 1080 comp, fitted like object-fit: cover) ----
 const PATH =
@@ -477,12 +483,16 @@ export default function Hero() {
         tl.fromTo(line.querySelectorAll('[data-char]'), { opacity: 0, filter: 'blur(18px)', xPercent: -30 },
           { opacity: 1, filter: 'blur(0px)', xPercent: 0, duration: 0.8, stagger: 0.035, ease: 'power2.out', clearProps: 'filter,transform' }, 0.75);
       });
+      blurIn(q('.hx-kick'), 1.1);
       blurIn(q('.hx-lead'), 1.3);
       blurIn(q('.hx-demo'), 1.5);
       if (glow) tl.to(glow, { opacity: 1, duration: 0.45, ease: 'power1.out' }, 1.6).to(glow, { opacity: 0, duration: 0.9, ease: 'power1.inOut' }, 2.05);
       tl.fromTo(html, { '--sun': 0 }, { '--sun': 1, duration: 1.1, ease: 'power2.inOut', onComplete: () => hero.current?.classList.add('lit') }, 1.75);
       tl.fromTo(q('.hx-card'), { opacity: 0, filter: 'blur(10px)', yPercent: 6 }, { opacity: 1, filter: 'blur(0px)', yPercent: 0, duration: 0.7, ease: 'power2.out', clearProps: 'filter,transform' }, 1.9);
       blurIn(q('.hx-discover, .hx-switch'), 1.95);
+      tl.fromTo(q('.hx-stats > div'), { opacity: 0, y: 24, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.6, stagger: 0.08, ease: 'power2.out', clearProps: 'filter,transform' }, 2.0);
+      tl.set(q('.hx-stats'), { opacity: 1 }, 2.0);
+      blurIn(q('.hx-tags'), 2.25);
       tl.call(() => setArmed(true), null, 2.1);
     });
     return () => { ctx.revert(); unlock(); };
@@ -506,6 +516,7 @@ export default function Hero() {
       {pre && <Preloader state={state} snap={snap} onWiped={() => setWiped(true)} />}
 
       <section className="hx" id="top" data-theme="dark" ref={hero}>
+        <p className="hx-kick" data-reveal="kick"><i />ISO 9001:2015 certified · Made in India</p>
         <h1 className="hx-h1" aria-label="Power Beyond Every Limit" data-reveal="headline">
           <span className="hx-line" data-line="" aria-hidden="true"><Chars text="Power " /><span className="hx-serif"><Chars text="Beyond" /></span></span>
           <span className="hx-line hx-l2" data-line="" aria-hidden="true"><Chars text="Every Limit" /></span>
@@ -534,6 +545,15 @@ export default function Hero() {
             </button>
           ))}
         </div>
+
+        <div className="hx-tags" data-reveal="tags" aria-hidden="true">
+          <div key={model} className="hx-tags-in">
+            {TAGS[model].map((t, i) => <span key={t.b} className={`hx-tag t${i}`}><b>{t.b}</b><small>{t.s}</small></span>)}
+          </div>
+        </div>
+        <dl className="hx-stats" data-reveal="stats">
+          {STATS_HERO.map(([v, l]) => <div key={l}><dt>{l}</dt><dd>{v}</dd></div>)}
+        </dl>
 
         <LensCard armed={armed} />
 
