@@ -1,6 +1,6 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { HERO_LINEUP } from '../data.js';
+import { HERO_LINEUP, waLink } from '../data.js';
 import Battery3D from './Battery3D.jsx';
 
 // ============================================================================
@@ -18,10 +18,10 @@ const MODELS = [
   { tab: 'Solar inverter', name: '1500W · 12V 120Ah' },
 ];
 const SWITCH_EVERY = 7000;
-// feature tags floating beside the model, per model
-const TAGS = [
-  [{ b: 'Smart BMS', s: 'Protected every ride' }, { b: '60V · 32Ah', s: 'Grade-A Li-ion cells' }],
-  [{ b: '1500W', s: 'Inverter output' }, { b: '12V · 120Ah', s: 'Lithium backup' }],
+// specs of the model on show (right column)
+const SPECS = [
+  { name: '60V 32Ah Li-ion pack', rows: [['Smart BMS', 'Protected every ride'], ['Grade-A cells', 'Matched and tested'], ['125 km+', 'Range per charge*']] },
+  { name: '1500W solar inverter', rows: [['1500W', 'Inverter output'], ['12V · 120Ah', 'Lithium backup'], ['Made in Sirsa', 'Haryana, India']] },
 ];
 const STATS_HERO = [['200+', 'Happy clients'], ['20+', 'Service centres'], ['20+', 'Distributors'], ['50+', 'Expert staff']];
 
@@ -485,14 +485,14 @@ export default function Hero() {
       });
       blurIn(q('.hx-kick'), 1.1);
       blurIn(q('.hx-lead'), 1.3);
-      blurIn(q('.hx-demo'), 1.5);
+      blurIn(q('.hx-demo, .hx-wa'), 1.5);
       if (glow) tl.to(glow, { opacity: 1, duration: 0.45, ease: 'power1.out' }, 1.6).to(glow, { opacity: 0, duration: 0.9, ease: 'power1.inOut' }, 2.05);
       tl.fromTo(html, { '--sun': 0 }, { '--sun': 1, duration: 1.1, ease: 'power2.inOut', onComplete: () => hero.current?.classList.add('lit') }, 1.75);
       tl.fromTo(q('.hx-card'), { opacity: 0, filter: 'blur(10px)', yPercent: 6 }, { opacity: 1, filter: 'blur(0px)', yPercent: 0, duration: 0.7, ease: 'power2.out', clearProps: 'filter,transform' }, 1.9);
       blurIn(q('.hx-discover, .hx-switch'), 1.95);
       tl.fromTo(q('.hx-stats > div'), { opacity: 0, y: 24, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.6, stagger: 0.08, ease: 'power2.out', clearProps: 'filter,transform' }, 2.0);
       tl.set(q('.hx-stats'), { opacity: 1 }, 2.0);
-      blurIn(q('.hx-tags'), 2.25);
+      blurIn(q('.hx-spec'), 1.7);
       tl.call(() => setArmed(true), null, 2.1);
     });
     return () => { ctx.revert(); unlock(); };
@@ -523,11 +523,11 @@ export default function Hero() {
         </h1>
 
         <div className="hx-lead" data-reveal="lead">
-          <p>Lithium-ion and LFP battery packs for e-bikes, e-rickshaws, solar homes and telecom.</p>
-          <p>Designed, built and tested in-house in Sirsa, so every pack delivers the power it promises.</p>
+          <p>Lithium-ion and LFP battery packs for e-bikes, e-rickshaws, solar homes and telecom — designed, built and tested in-house in Sirsa.</p>
         </div>
         <div className="hx-ctas">
           <a className="hx-demo" href="#products" data-reveal="demo"><span>Explore batteries</span><i><ArrowUR /></i></a>
+          <a className="hx-wa" href={waLink('Hi Litpax, I want to enquire about lithium batteries.')} target="_blank" rel="noopener" data-reveal="demo">WhatsApp us</a>
         </div>
 
         <div className="hx-stage" ref={stage}>
@@ -546,9 +546,11 @@ export default function Hero() {
           ))}
         </div>
 
-        <div className="hx-tags" data-reveal="tags" aria-hidden="true">
-          <div key={model} className="hx-tags-in">
-            {TAGS[model].map((t, i) => <span key={t.b} className={`hx-tag t${i}`}><b>{t.b}</b><small>{t.s}</small></span>)}
+        <div className="hx-spec" data-reveal="spec">
+          <div key={model} className="hx-spec-in" aria-live="polite">
+            <p className="hsp-k"><i />Now showing · drag to rotate</p>
+            <p className="hsp-name">{SPECS[model].name}</p>
+            <ul>{SPECS[model].rows.map(([k, v]) => <li key={k}><b>{k}</b><span>{v}</span></li>)}</ul>
           </div>
         </div>
         <dl className="hx-stats" data-reveal="stats">
