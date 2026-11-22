@@ -163,7 +163,7 @@ section.hx2{position:relative;height:max(100svh,calc(900 * var(--u)));padding:0;
   .hx-stats{position:relative;left:auto;bottom:auto;align-self:stretch;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:calc(24 * var(--u))}
   .hx-stats dd{font-size:34px}.hx-stats dt{font-size:12.5px}
   .hx-ctas{margin-top:calc(24 * var(--u))}
-  .hx-stage{position:relative;left:auto;top:auto;bottom:auto;width:calc(100% + 2 * var(--edge-x));margin:calc(8 * var(--u)) calc(-1 * var(--edge-x)) 0;height:calc(330 * var(--u))}
+  .hx-stage{position:relative;left:auto;right:auto;top:auto;bottom:auto;width:calc(100% + 2 * var(--edge-x));margin:calc(8 * var(--u)) calc(-1 * var(--edge-x)) 0;height:calc(330 * var(--u))}
   .hx-switch{position:relative;left:auto;bottom:auto;transform:none;align-self:center;margin-top:calc(4 * var(--u))}
   .hx-switch button{font-size:13px}
   .hx-card{position:relative;right:auto;bottom:auto;align-self:stretch;width:auto;margin-top:calc(32 * var(--u))}
