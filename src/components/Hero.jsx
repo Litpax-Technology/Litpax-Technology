@@ -1,6 +1,6 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { HERO_LINEUP, waLink } from '../data.js';
+import { HERO_LINEUP, PHOTOS, waLink } from '../data.js';
 import Battery3D from './Battery3D.jsx';
 
 // ============================================================================
@@ -121,6 +121,7 @@ function Scene({ on, sectionRef }) {
     <div className={`hx-scene${on ? ' on' : ''}`} aria-hidden="true">
       <div className="hx-night" />
       <div className="hx-day" />
+      <div className="hx-photo" style={{ backgroundImage: `url("${PHOTOS.cta}")` }} />
       <div className="hx-glow" />
       <div className="hx-shade" />
       <div className="hx-tiles" ref={tilesRef} />

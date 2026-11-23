@@ -8,6 +8,7 @@ import Header from './components/Header.jsx';
 import Hero from './components/Hero.jsx';
 import { About, Applications, Brands, Certifications, Cta, Process, Reviews, Ticker } from './components/Sections.jsx';
 import PackTour from './components/PackTour.jsx';
+import Lineup from './components/Lineup.jsx';
 import Products from './components/Products.jsx';
 import BatteryFinder from './components/BatteryFinder.jsx';
 import Why from './components/Why.jsx';
@@ -105,6 +106,7 @@ export default function App() {
         <Ticker />
         <Brands />
         <About />
+        <Lineup onOpen={setQuick} />
         <PackTour />
         <Applications onPick={setFilter} />
         <Products filter={filter} setFilter={setFilter} onOpen={setQuick} />

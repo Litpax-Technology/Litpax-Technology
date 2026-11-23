@@ -7,5 +7,6 @@ import './styles/tour.css';
 import './styles/trust.css';
 import './styles/header.css';
 import './styles/premium.css';
+import './styles/photos.css';
 
 createRoot(document.getElementById('root')).render(<App />);

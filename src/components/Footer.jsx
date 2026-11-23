@@ -1,5 +1,5 @@
 import Logo from './Logo.jsx';
-import { CONTACT, waLink } from '../data.js';
+import { CONTACT, waLink, PHOTOS } from '../data.js';
 
 // Small line icons (stroke = currentColor)
 const I = {
@@ -33,6 +33,7 @@ export default function Footer() {
         <div className="wrap">
           {/* Call-to-action card */}
           <div className="f-cta rv">
+            <div className="f-cta-photo" aria-hidden="true" style={{ backgroundImage: `url("${PHOTOS.process}")` }} />
             <div className="f-cta-bat" aria-hidden="true"><i /></div>
             <div className="f-cta-copy">
               <span className="f-cta-k">Ready when you are</span>

@@ -3,15 +3,16 @@
 // products, phone numbers or photos — no need to touch components.
 // ---------------------------------------------------------------
 
-// Free photos from Unsplash (free for commercial use). Replace any URL
-// with your own photo, e.g. '/images/factory.jpg' placed in /public/images.
-const u = (id, w = 1600) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
+// Photos live in /public/photos (free Unsplash photos, saved with the site so
+// they load fast). To use your own, replace the file or change the name here.
+const ph = (f) => `${import.meta.env.BASE_URL}photos/${f}`;
 
 export const PHOTOS = {
-  hero: u('1593941707874-ef25b8b4a92b', 1400),      // EV charging close-up
-  band: u('1775259928422-779c18e32007', 2000),      // home EV charging + clean energy
-  process: u('1532186773960-85649e5cb70b', 2000),   // precision robotic assembly
-  cta: u('1518770660439-4636190af475', 2000),       // electronics / circuit board
+  hero: ph('ev-charge.jpg'),       // EV charging close-up
+  band: ph('ev-home.jpg'),         // home EV charging + solar carport
+  process: ph('assembly.jpg'),     // precision robotic assembly
+  cta: ph('circuit.jpg'),          // electronics / circuit board
+  solar: ph('app-solar.jpg'),      // solar panels
 };
 
 export const CONTACT = {
@@ -33,12 +34,12 @@ export const waLink = (text) =>
   `https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(text)}`;
 
 export const APPLICATIONS = [
-  { go: 'ebike', title: 'E-Bike & Scooter', text: 'Lightweight, high-range packs for electric two-wheelers.', chips: ['40V', '48V', '60V', '74V'], img: u('1761169331195-e079523673c5', 900) },
-  { go: 'erick', title: 'E-Rickshaw', text: 'Heavy-duty LFP packs built for full-day commercial runs.', chips: ['51.2V', '60V'], img: u('1564291886459-a39ad7415125', 900) },
-  { go: 'solar', title: 'Solar & Inverter', text: 'Long-life energy storage for homes, shops and industry.', chips: ['12.8V', '25.6V', '100Ah', '200Ah'], img: u('1509391366360-2e959784a276', 900) },
-  { title: 'E-Cycle', text: 'Compact packs for electric bicycles and conversions.', chips: ['25.6V', 'Custom'], img: u('1673969206245-7da3eb7cde76', 900) },
-  { title: 'Medical', text: 'Safe, stable LFP power for critical medical equipment.', chips: ['LFP', 'Custom'], img: u('1516549655169-df83a0774514', 900) },
-  { title: 'Telecom & Portable', text: 'Reliable tower backup, plus portable power packs.', chips: ['48V', 'Portable'], img: u('1557174360-3f4f7c724501', 900) },
+  { go: 'ebike', title: 'E-Bike & Scooter', text: 'Lightweight, high-range packs for electric two-wheelers.', chips: ['40V', '48V', '60V', '74V'], img: ph('app-ebike.jpg') },
+  { go: 'erick', title: 'E-Rickshaw', text: 'Heavy-duty LFP packs built for full-day commercial runs.', chips: ['51.2V', '60V'], img: ph('app-erick.jpg') },
+  { go: 'solar', title: 'Solar & Inverter', text: 'Long-life energy storage for homes, shops and industry.', chips: ['12.8V', '25.6V', '100Ah', '200Ah'], img: ph('app-solar.jpg') },
+  { title: 'E-Cycle', text: 'Compact packs for electric bicycles and conversions.', chips: ['25.6V', 'Custom'], img: ph('app-ecycle.jpg') },
+  { title: 'Medical', text: 'Safe, stable LFP power for critical medical equipment.', chips: ['LFP', 'Custom'], img: ph('app-medical.jpg') },
+  { title: 'Telecom & Portable', text: 'Reliable tower backup, plus portable power packs.', chips: ['48V', 'Portable'], img: ph('app-telecom.jpg') },
 ];
 
 // Real Litpax product photos (optimised WebP in /public/products).

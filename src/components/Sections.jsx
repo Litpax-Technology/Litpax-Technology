@@ -51,6 +51,16 @@ export function About() {
             </div>
           ))}
         </div>
+        <div className="about-pics">
+          <figure className="ap rv-img">
+            <img src={PHOTOS.solar} alt="Rooftop solar panels" loading="lazy" decoding="async" width="900" height="600" />
+            <figcaption><b>Solar homes</b>Lithium backup that lasts through the night</figcaption>
+          </figure>
+          <figure className="ap rv-img">
+            <img src={PHOTOS.hero} alt="Electric vehicle charging" loading="lazy" decoding="async" width="1400" height="930" />
+            <figcaption><b>Electric mobility</b>Packs built for daily Indian roads</figcaption>
+          </figure>
+        </div>
       </div>
     </section>
   );
@@ -158,6 +168,7 @@ export function Cta() {
   return (
     <section className="cta" id="dealer">
       <div className="wrap">
+        <div className="cta-photo" aria-hidden="true" style={{ backgroundImage: `url("${PHOTOS.band}")` }} />
         <span className="cta-k rv">Dealership open — across India</span>
         <h2 className="cta-t rv">Become a<br /><span className="it">Litpax dealer.</span></h2>
         <div className="cta-row rv">
