@@ -2,115 +2,114 @@
    OPENING STORY — one pack, four scenes (see Story.jsx)
    --s plate unit (cover fit), --c UI unit (contain fit); set by script.
    ===================================================================== */
-.story{position:relative;height:100svh;padding:0;overflow:hidden;background:#FBF4E9;color:var(--ink);user-select:none;-webkit-user-select:none}
+.story{position:relative;height:100svh;padding:0;overflow:hidden;background:#FFFDF6;color:var(--ink);user-select:none;-webkit-user-select:none}
 .st-layer{position:absolute;inset:0}
 .st-frame{position:absolute;left:var(--fl);top:var(--ft);width:calc(1440 * var(--s));height:calc(900 * var(--s));transform-origin:50% 55%;will-change:transform}
 
-/* 0 · hero plate: warm haze, drifting mist, a soft stone plinth */
-.st-hero{z-index:1;background:#FBF4E9;will-change:opacity}
-/* lake plate + water video: same framing, the rock centred at frame x 720 */
-.st-lake,.st-water{position:absolute;width:102.78%;left:-.14%;top:-5.22%;height:auto;max-width:none;display:block;pointer-events:none}
+/* ---------- 0 · hero: the lake, brighter and sunlit ---------- */
+.st-hero{z-index:1;background:#FFF8EA;will-change:opacity}
+.st-lake,.st-water{position:absolute;width:102.78%;left:-.14%;top:-5.22%;height:auto;max-width:none;display:block;pointer-events:none;
+  filter:brightness(1.04) contrast(1.12) saturate(1.28)}
 .st-water{aspect-ratio:1168/784;object-fit:cover;opacity:0;z-index:1}
+/* low sun behind the rock, upper right, with a soft bloom */
+.st-sun{position:absolute;z-index:2;left:calc(860 * var(--s));top:calc(120 * var(--s));width:calc(520 * var(--s));height:calc(520 * var(--s));border-radius:50%;pointer-events:none;mix-blend-mode:screen;
+  background:radial-gradient(closest-side,rgba(255,244,214,.7) 0%,rgba(255,214,140,.38) 20%,rgba(255,190,110,.14) 48%,rgba(255,190,110,0) 72%);animation:stSun 9s ease-in-out infinite}
+@keyframes stSun{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.06);opacity:.86}}
+/* light rays falling through the mist */
+.st-rays{position:absolute;z-index:2;inset:0;pointer-events:none;mix-blend-mode:screen;overflow:hidden}
+.st-rays i{position:absolute;top:calc(-120 * var(--s));left:calc(1060 * var(--s));width:calc(70 * var(--s));height:calc(1000 * var(--s));transform-origin:50% 0;
+  background:linear-gradient(180deg,rgba(255,226,170,.30),rgba(255,226,170,0) 78%);filter:blur(calc(14 * var(--s)));animation:stRay 8s ease-in-out infinite}
+.st-rays i:nth-child(1){transform:rotate(22deg)}
+.st-rays i:nth-child(2){transform:rotate(32deg);width:calc(40 * var(--s));animation-delay:-2s}
+.st-rays i:nth-child(3){transform:rotate(41deg);width:calc(90 * var(--s));animation-delay:-4s}
+.st-rays i:nth-child(4){transform:rotate(52deg);width:calc(50 * var(--s));animation-delay:-1s}
+.st-rays i:nth-child(5){transform:rotate(62deg);width:calc(80 * var(--s));animation-delay:-5s}
+@keyframes stRay{0%,100%{opacity:.85}50%{opacity:.35}}
+/* sun glints on the water */
+.st-glints{position:absolute;z-index:2;inset:0;pointer-events:none;mix-blend-mode:screen}
+.st-glints i{position:absolute;left:calc(var(--x) * var(--s));top:calc(var(--y) * var(--s));width:calc(var(--w) * var(--s));height:calc(2.2 * var(--s));border-radius:2px;
+  background:linear-gradient(90deg,rgba(255,246,214,0),rgba(255,246,214,.95),rgba(255,246,214,0));opacity:0;animation:stGlint var(--d) ease-in-out var(--o) infinite}
+@keyframes stGlint{0%,100%{opacity:0;transform:scaleX(.4)}45%{opacity:.9;transform:scaleX(1)}60%{opacity:.2}}
+.st-contact{position:absolute;z-index:3;left:calc(589 * var(--s));top:calc(486 * var(--s));width:calc(262 * var(--s));height:calc(30 * var(--s));border-radius:50%;
+  background:radial-gradient(closest-side,rgba(20,14,8,.6),rgba(20,14,8,.25) 60%,rgba(20,14,8,0));filter:blur(calc(3 * var(--s)));transform:scale(var(--pk,1));pointer-events:none}
 .st-fallback{display:none}
-.no-lake .st-fallback{display:block}
-.no-lake .st-lake,.no-lake .st-water{display:none}
-.st-haze{position:absolute;inset:0;background:
-  radial-gradient(ellipse 60% 45% at 50% 62%,#ECEEE6 0%,rgba(236,238,230,0) 70%),
-  linear-gradient(180deg,#F4F5F0 0%,#F1F2EC 52%,#E3E5DC 74%,#D8DBD0 100%)}
-.st-haze::after{content:"";position:absolute;left:0;right:0;top:61%;height:1px;background:linear-gradient(90deg,transparent,rgba(80,85,75,.18),transparent)}
-.st-mist{position:absolute;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.85),rgba(255,255,255,0));filter:blur(calc(10 * var(--s)));pointer-events:none}
-.st-mist.m1{left:calc(120 * var(--s));top:calc(430 * var(--s));width:calc(560 * var(--s));height:calc(120 * var(--s));animation:mistA 16s ease-in-out infinite alternate}
-.st-mist.m2{left:calc(760 * var(--s));top:calc(470 * var(--s));width:calc(620 * var(--s));height:calc(140 * var(--s));animation:mistB 19s ease-in-out infinite alternate}
-.st-mist.m3{left:calc(420 * var(--s));top:calc(560 * var(--s));width:calc(700 * var(--s));height:calc(110 * var(--s));opacity:.7;animation:mistA 23s ease-in-out -6s infinite alternate}
-@keyframes mistA{from{transform:translateX(-4%)}to{transform:translateX(6%)}}
-@keyframes mistB{from{transform:translateX(5%)}to{transform:translateX(-6%)}}
-.st-plinth{position:absolute;left:calc(530 * var(--s));top:calc(468 * var(--s));width:calc(380 * var(--s));height:calc(190 * var(--s));transform:scale(var(--pk,1));transform-origin:50% calc(23 * var(--s))}
-.st-plinth::before{content:"";position:absolute;left:0;right:0;top:calc(22 * var(--s));bottom:0;border-radius:0 0 46% 46% / 0 0 30% 30%;
-  background:linear-gradient(90deg,#7E8379 0%,#AEB2A6 38%,#979C90 70%,#6F7469 100%)}
-.st-plinth::after{content:"";position:absolute;left:0;right:0;top:0;height:calc(46 * var(--s));border-radius:50%;
-  background:radial-gradient(ellipse at 45% 40%,#DCDFD5 0%,#C3C7BA 70%,#A6AA9E 100%);box-shadow:inset 0 -2px 0 rgba(0,0,0,.08)}
-.st-mark{position:absolute;left:0;right:0;margin:0;text-align:center;white-space:nowrap;font-family:var(--serif);font-weight:400;line-height:1;letter-spacing:-.01em;color:#EDE3D4;pointer-events:none}
-.st-cue{position:absolute;left:50%;bottom:calc(28 * var(--c, 1px));transform:translateX(-50%);display:flex;align-items:center;gap:8px;font-size:13px;letter-spacing:.06em;color:#7a6a58;transition:opacity .5s}
+.no-lake .st-hero .st-fallback{display:block}
+.no-lake .st-lake,.no-lake .st-water,.no-lake .st-contact{display:none}
+.st-haze{position:absolute;inset:0;background:linear-gradient(180deg,#FFF8EA 0%,#F7EDDF 52%,#EADBC5 74%,#E2D0B6 100%)}
+.st-plinth{position:absolute;left:calc(530 * var(--s));top:calc(478 * var(--s));width:calc(380 * var(--s));height:calc(120 * var(--s));border-radius:50% 50% 40% 40%/40% 40% 30% 30%;
+  background:linear-gradient(90deg,#4A3A2C,#7A6248 45%,#4A3A2C);transform:scale(var(--pk,1));transform-origin:50% 0}
+.st-mark{position:absolute;left:0;right:0;margin:0;text-align:center;white-space:nowrap;font-family:var(--serif);font-weight:400;line-height:1;letter-spacing:-.01em;
+  color:rgba(150,108,58,.16);pointer-events:none}
+.st-cue{position:absolute;left:50%;bottom:calc(28 * var(--c, 1px));transform:translateX(-50%);display:flex;align-items:center;gap:8px;font-size:13px;letter-spacing:.08em;color:#6B5A44;transition:opacity .5s}
 .st-cue span{display:inline-block;animation:floatY 1.6s ease-in-out infinite}
+.story:not([data-state="0"]) .st-cue{opacity:0}
+/* a warm veil of haze over the pack, like the mist in front of it */
+.st-veil{position:absolute;inset:0;z-index:7;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,248,234,.08) 0%,rgba(255,248,234,.03) 35%,rgba(255,248,234,0) 60%)}
 
-/* 1 · ingredients ring */
+/* ---------- 1 · ingredients ring ---------- */
 .st-ingr{z-index:2;pointer-events:none}
 .st-chip{position:absolute;transform:translate(-50%,calc(var(--chip) / -2))}
 .in-w{display:flex;flex-direction:column;align-items:center;opacity:0;transform:scale(.7);transition:opacity .5s cubic-bezier(.25,.1,.25,1),transform .7s cubic-bezier(.3,0,.15,1)}
 .st-ingr.on .in-w{opacity:1;transform:none}
-.st-disc,.st-thumb{display:block;flex:none;border-radius:50%;padding:4%;background:var(--bg);box-shadow:0 0 0 1px rgba(27,31,26,.18)}
+.st-disc,.st-thumb{display:block;flex:none;border-radius:50%;padding:4%;background:#fff;box-shadow:0 0 0 1px rgba(27,31,26,.14),0 14px 30px -18px rgba(27,31,26,.45)}
 .st-disc{width:var(--chip);height:var(--chip)}
 .st-disc i,.st-thumb i{display:block;width:100%;height:100%;border-radius:50%;background-repeat:no-repeat}
 .st-chip b{margin-top:calc(var(--chip) * .2);font-size:var(--cn);font-weight:500;white-space:nowrap}
-.st-chip small{max-width:calc(var(--chip) * 2.3);text-align:center;font-size:var(--cs);line-height:1.3;color:#3A3F38}
+.st-chip small{max-width:calc(var(--chip) * 2.3);text-align:center;font-size:var(--cs);line-height:1.3;color:#4C5249}
 
-/* 2 · benefits panel */
-.st-bene{z-index:3;background:#E9EBE3;transform:translateY(100%);will-change:transform}
+/* ---------- 2 · benefits panel ---------- */
+.st-bene{z-index:3;background:linear-gradient(180deg,#FBF7EE 0%,#F1ECE0 100%);transform:translateY(100%);will-change:transform}
 .st-rows{position:absolute;display:flex;flex-direction:column;gap:var(--rg)}
 .st-row{display:flex;align-items:center;gap:calc(var(--rt) * .28);opacity:0;transform:translateX(60px);transition:opacity .6s cubic-bezier(.25,.1,.25,1),transform 1s cubic-bezier(.3,0,.05,1)}
 .st-row:nth-child(2){transition-delay:.12s}
 .st-row:nth-child(3){transition-delay:.24s}
 .st-bene.on .st-row{opacity:1;transform:none}
-.st-thumb{width:var(--rt);height:var(--rt);background:#E9EBE3;box-shadow:0 0 0 1px rgba(27,31,26,.16)}
+.st-thumb{width:var(--rt);height:var(--rt)}
 .st-row h3{margin:0;font-family:var(--serif);font-weight:500;font-size:var(--rh);line-height:1.2;letter-spacing:0;color:var(--ink)}
-.st-row p{margin-top:.25em;max-width:var(--rw);font-size:var(--rp);line-height:1.45;color:#3A3F38}
+.st-row p{margin-top:.25em;max-width:var(--rw);font-size:var(--rp);line-height:1.45;color:#4C5249}
 
-/* 3 · dark stage */
-.st-scene{z-index:4;background:#1B1F1A;transform:translateY(100%);will-change:transform;color:#F4F5F0}
-.st-room{position:absolute;inset:0;background:
-  radial-gradient(ellipse 50% 45% at 55% 58%,rgba(243,198,35,.45),rgba(243,198,35,0) 70%),
-  linear-gradient(180deg,#262B24 0%,#20241F 55%,#1B1F1A 100%)}
-.st-beam{position:absolute;right:-6%;top:-10%;width:62%;height:120%;background:linear-gradient(245deg,rgba(255,240,180,.22) 0%,rgba(255,240,180,.06) 45%,rgba(255,240,180,0) 70%);transform:skewX(-14deg);pointer-events:none}
-.st-table{position:absolute;left:0;right:0;top:calc(740 * var(--s));bottom:0;background:linear-gradient(180deg,#3A3F38 0%,#2C302A 40%,#1E221D 100%);box-shadow:0 -1px 0 rgba(255,240,180,.18)}
-.st-ped{position:absolute;left:calc(585 * var(--s));top:calc(676 * var(--s));width:calc(270 * var(--s));height:calc(92 * var(--s))}
-.st-ped::before{content:"";position:absolute;left:4%;right:4%;top:calc(20 * var(--s));bottom:0;border-radius:0 0 10px 10px;background:linear-gradient(90deg,#7E8379,#B7BBAE 45%,#979C90 80%,#6F7469)}
-.st-ped::after{content:"";position:absolute;left:0;right:0;top:0;height:calc(42 * var(--s));border-radius:50%;background:radial-gradient(ellipse at 45% 40%,#DCDFD5 0%,#C3C7BA 65%,#A6AA9E 100%)}
-.st-3d{position:absolute;left:calc(540 * var(--s));top:calc(366 * var(--s));width:calc(360 * var(--s));height:calc(360 * var(--s));filter:sepia(.14) saturate(.92) contrast(.96);opacity:0;transition:opacity .8s ease;pointer-events:none}
+/* ---------- 3 · warm room ---------- */
+.st-scene{z-index:4;background:#2B1F14;transform:translateY(100%);will-change:transform;color:#F4F5F0}
+.st-room-img{position:absolute;width:100%;left:0;top:-3.75%;height:auto;max-width:none;display:block;pointer-events:none;filter:brightness(1.08) saturate(1.08)}
+.st-room{position:absolute;inset:0;background:radial-gradient(ellipse 50% 45% at 55% 58%,rgba(243,198,35,.25),rgba(243,198,35,0) 70%),linear-gradient(180deg,#3A281A,#2B1F14)}
+.st-ped{position:absolute;left:calc(585 * var(--s));top:calc(690 * var(--s));width:calc(270 * var(--s));height:calc(70 * var(--s));border-radius:50%;background:linear-gradient(90deg,#5C3A22,#8D6039,#5C3A22)}
+.no-room .st-scene .st-fallback{display:block}
+.no-room .st-room-img{display:none}
+.st-3d{position:absolute;left:calc(540 * var(--s));top:calc(366 * var(--s));width:calc(360 * var(--s));height:calc(360 * var(--s));opacity:0;transition:opacity .8s ease;pointer-events:none;filter:sepia(.14) saturate(.92) contrast(.96)}
 .story.show3d .st-3d{opacity:1;pointer-events:auto}
 .st-cta{position:absolute;left:0;right:0;display:flex;flex-direction:column;align-items:center;text-align:center;z-index:7}
 .st-cta h2{margin:0;font-family:var(--serif);font-weight:400;font-size:var(--th);letter-spacing:.2em;line-height:1.3;color:#F4F5F0;opacity:0;transform:translateY(24px);transition:opacity .9s ease,transform 1s cubic-bezier(.22,1,.36,1)}
 .st-btn{margin-top:var(--tb);padding:.75em 2.3em;border-radius:999px;border:0;background:#F3C623;font-size:var(--tf);font-weight:500;letter-spacing:.04em;color:#1B1F1A;opacity:0;transform:translateY(18px);
-  transition:opacity .9s ease .15s,transform 1s cubic-bezier(.22,1,.36,1) .15s,background .3s,color .3s}
-.st-btn:hover{background:#FFD84A;color:#1B1F1A}
+  box-shadow:0 14px 30px -14px rgba(243,198,35,.8);transition:opacity .9s ease .15s,transform 1s cubic-bezier(.22,1,.36,1) .15s,background .3s}
+.st-btn:hover{background:#FFD84A}
 .st-switch{display:flex;gap:4px;margin-top:14px;padding:4px;border-radius:999px;background:rgba(244,245,240,.08);box-shadow:inset 0 0 0 1px rgba(244,245,240,.25);opacity:0;transition:opacity .9s ease .35s}
 .st-switch button{border:0;background:none;color:#F4F5F0;font:inherit;font-size:13px;padding:6px 14px;border-radius:999px;cursor:pointer;transition:background .3s,color .3s}
 .st-switch button.on{background:#F4F5F0;color:#1B1F1A}
 .st-scene.on h2,.st-scene.on .st-btn{opacity:1;transform:none}
 .story.show3d .st-switch{opacity:1}
 
-/* the pack (above every layer) and the wooden tray */
-.st-jar{position:absolute;left:0;top:0;z-index:6;height:auto;max-width:none;transform-origin:50% 100%;will-change:transform;pointer-events:none;
-  filter:drop-shadow(0 18px 24px rgba(27,31,26,.18));transition:opacity .8s ease}
+/* ---------- the pack and the tray ---------- */
+.st-jar{position:absolute;left:0;top:0;z-index:6;height:auto;max-width:none;transform-origin:50% 100%;will-change:transform;pointer-events:none;transition:opacity .8s ease}
 .story.show3d .st-jar{opacity:0}
 .st-tray{position:absolute;left:0;top:0;z-index:5;border-radius:50%;will-change:transform;
-  background:radial-gradient(ellipse at 45% 38%,#E3E6DC 0%,#C8CBBE 60%,#A3A89C 100%);box-shadow:0 18px 30px -12px rgba(27,31,26,.45),inset 0 -3px 0 rgba(0,0,0,.12)}
-
-/* data-state hint for the scroll cue */
-.story:not([data-state="0"]) .st-cue{opacity:0}
+  background:radial-gradient(ellipse at 45% 38%,#FFFFFF 0%,#E3E6DC 55%,#B9BDB0 100%);box-shadow:0 18px 30px -12px rgba(27,31,26,.4),inset 0 -3px 0 rgba(0,0,0,.08),0 0 0 1px rgba(243,198,35,.35)}
 
 /* load intro: hidden until the pack cut-out and fonts are ready */
 .story-intro .st-jar,.story-intro .st-frame,.story-intro .st-mark,.story-intro .hd-in{opacity:0}
 .st-mark,.hd-in{transition:opacity .45s ease-out .06s}
 
-@media (prefers-reduced-motion:reduce){
-  .st-mist,.st-cue span{animation:none}
-}
-
 /* WhatsApp bubble waits until you scroll past the story */
 .wa{transition:opacity .4s var(--ease),transform .5s var(--spring)}
 .at-hero .wa{opacity:0;transform:scale(.6);pointer-events:none}
 
-/* ---- the pack in the lake: contact shadow on the rock, haze veil over it ---- */
-.st-contact{position:absolute;left:calc(589 * var(--s));top:calc(486 * var(--s));width:calc(262 * var(--s));height:calc(30 * var(--s));border-radius:50%;
-  background:radial-gradient(closest-side,rgba(20,14,8,.62),rgba(20,14,8,.25) 60%,rgba(20,14,8,0));filter:blur(calc(3 * var(--s)));
-  transform:scale(var(--pk,1),var(--pk,1));transform-origin:50% 50%;pointer-events:none}
-.st-veil{position:absolute;inset:0;z-index:7;pointer-events:none;
-  background:linear-gradient(180deg,rgba(251,244,233,.20) 0%,rgba(251,244,233,.10) 35%,rgba(251,244,233,0) 60%)}
-.no-lake .st-contact{display:none}
+@media (prefers-reduced-motion:reduce){
+  .st-sun,.st-rays i,.st-glints i,.st-cue span{animation:none}
+}
 
-/* ---- final scene photo: the room with the wooden pedestal ---- */
-.st-scene{background:#2B1F14}
-.st-room-img{position:absolute;width:100%;left:0;top:-3.75%;height:auto;max-width:none;display:block;pointer-events:none}
-.st-scene .st-fallback{display:none}
-.no-room .st-scene .st-fallback{display:block}
-.no-room .st-room-img{display:none}
+/* no broken-image flash while the cut-out is being made */
+.st-jar:not([src]){visibility:hidden}
+/* soft cream fade at the foot of the lake so the plate's dark bottom edge never shows */
+.st-frame::after{content:"";position:absolute;left:0;right:0;bottom:0;height:14%;pointer-events:none;z-index:2;
+  background:linear-gradient(to bottom,rgba(255,248,234,0),rgba(255,248,234,.55) 60%,rgba(255,248,234,.85))}
+@media (max-width:760px){ .st-cue{bottom:64px} }

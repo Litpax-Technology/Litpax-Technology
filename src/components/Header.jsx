@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Logo from './Logo.jsx';
 import { CONTACT, waLink } from '../data.js';
+import { quote } from '../lib/quote.js';
 
 const LINKS = [
   ['#applications', 'Applications'],
@@ -20,6 +21,9 @@ export default function Header() {
   const [prog, setProg] = useState(0);        // page scroll progress 0..1
   const [hover, setHover] = useState('');     // link under the mouse (sliding highlight)
   const [ind, setInd] = useState(null);       // highlight position { x, w }
+  const [qCount, setQCount] = useState(quote.count); // batteries in the quote list
+  const [qBump, setQBump] = useState(0);
+  useEffect(() => quote.subscribe((l) => { setQCount(l.length); setQBump((b) => b + 1); }), []);
   const navRef = useRef(null);
 
   useEffect(() => {
@@ -85,6 +89,10 @@ export default function Header() {
             </ul>
           </nav>
           <div className="hd-act">
+            <button type="button" className="hd-quote-btn" onClick={() => quote.open()} aria-label={`Open quote list (${qCount})`}>
+              <svg width="20" height="22" viewBox="0 0 24 26" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><rect x="5" y="3" width="14" height="21" rx="2" /><path d="M9 3V1.5h6V3M9 10h6M9 14h6M9 18h4" /></svg>
+              <span key={qBump} className={`hd-quote-n${qCount ? ' on' : ''}`}>{qCount}</span>
+            </button>
             <a className="hd-cta" href="#contact">
               <span className="hd-cta-l">Get a quote</span>
               <span className="hd-cta-c" aria-hidden="true"><svg viewBox="0 0 11.8536 11.8536" fill="none" stroke="currentColor" strokeWidth="1"><path d="M11.3536 11.5V0.5H0.353553M11.3536 0.5L0.353553 11.5" /></svg></span>

@@ -12,7 +12,7 @@ export function cutoutCropped(src) {
   const job = cutout(src).then(async (url) => {
     const img = new Image();
     img.src = url;
-    await img.decode();
+    await loaded(img);
     const W = img.naturalWidth, H = img.naturalHeight;
     const c = document.createElement('canvas');
     c.width = W; c.height = H;
@@ -41,7 +41,7 @@ export function cutout(src) {
     const img = new Image();
     img.decoding = 'async';
     img.src = src;
-    await img.decode();
+    await loaded(img);
     const W = img.naturalWidth, H = img.naturalHeight, N = W * H;
     const c = document.createElement('canvas');
     c.width = W; c.height = H;
@@ -79,4 +79,14 @@ export function cutout(src) {
   })();
   cache.set(src, job);
   return job;
+}
+
+// Waits for an image to load. img.decode() can stall in background or
+// throttled tabs, so this uses the load event and only decodes as a bonus.
+function loaded(img) {
+  if (img.complete && img.naturalWidth) return Promise.resolve();
+  return new Promise((res, rej) => {
+    img.onload = () => res();
+    img.onerror = rej;
+  });
 }

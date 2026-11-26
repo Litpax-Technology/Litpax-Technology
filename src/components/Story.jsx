@@ -6,11 +6,11 @@ import { cutoutCropped } from '../lib/cutout.js';
 // ============================================================================
 // Opening story: one Litpax 60V 32Ah pack stays on screen while four scenes
 // change around it.
-//   0 hero        — the pack stands on a stone plinth in warm haze, LITPAX behind it
+//   0 hero        — the pack stands on a rock in a sunlit, misty lake
 //   1 inside      — the pack grows and drops; five round close-ups ring it
-//   2 benefits    — a beige panel rises with a wooden tray that catches the pack
-//   3 stage       — a dark stage rises; the pack sinks onto a pedestal and turns
-//                   into the live 3D model (battery or inverter)
+//   2 benefits    — a panel rises with a stone tray that catches the pack
+//   3 stage       — a warm room rises; the pack sinks onto a wooden pedestal
+//                   and turns into the live 3D model (battery or inverter)
 // Each wheel flick / swipe / arrow key plays one whole, time-based transition.
 // After scene 3 the page scrolls on normally into the rest of the site.
 // ============================================================================
@@ -42,12 +42,15 @@ const ROWS = [
 ];
 const MODELS = ['Battery', 'Inverter'];
 
-// hero plate: misty lake with a dark basalt rock (from the HIVEN brief), plus a
-// pixel-aligned water video that loops by crossfading two copies
-const LAKE = 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261123_060932_bb1e06e4-8bd5-45a0-b4a4-24854cffb528.png&w=2048&q=85';
+// hero plate: misty lake with a dark rock, plus a pixel-aligned water video
+// that loops by crossfading two copies; final scene: room with a wooden pedestal
+const HG = (id, w) => `https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2F${id}.png&w=${w}&q=85`;
+const LAKE = HG('hf_20261123_060932_bb1e06e4-8bd5-45a0-b4a4-24854cffb528', 2048);
 const WATER = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20261123_070127_46bf2fe6-4037-462d-aa6a-55d52b357a2d.mp4';
-// final scene: dark terracotta room with a round wooden pedestal (from the same brief)
-const ROOM = 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261123_060933_bddedf90-ba56-477b-9c32-901bc025bdb0.png&w=2048&q=85';
+const ROOM = HG('hf_20261123_060933_bddedf90-ba56-477b-9c32-901bc025bdb0', 2048);
+
+// sun glints dancing on the water (frame coordinates, fixed)
+const GLINTS = Array.from({ length: 22 }, (_, i) => ({ x: 80 + ((i * 131) % 1280), y: 560 + ((i * 47) % 260), w: 18 + ((i * 13) % 34), d: 2.4 + ((i * 7) % 5) * 0.5, o: (i * 0.37) % 3 }));
 
 // ---- curves (cubic-bezier) ----
 function bezier(x1, y1, x2, y2) {
@@ -89,7 +92,7 @@ export default function Story() {
   const st = useRef({
     state: 0, R: 900 / 1200, K: null, W: 300, tray: null, vh: 800,
     jx: ch(0), jy: ch(0), jw: ch(0), hero: ch(1), bene: ch(0), out: ch(0), rows: ch(0), scene: ch(0), intro: ch(0),
-    timers: [], locked: false, dark: false,
+    timers: [], dark: false, grade: -1,
   });
 
   // the pack photo, cut out of its white background and cropped tight
@@ -127,11 +130,10 @@ export default function Story() {
 
       const K0 = F(720, 499, 262);
       if (portrait) K0.w = Math.min(K0.w, 0.48 * vw);
-      rootEl.style.setProperty('--pk', String(K0.w / (262 * s)));   // plinth + contact shadow follow the pack's size
+      rootEl.style.setProperty('--pk', String(K0.w / (262 * s)));   // contact shadow follows the pack's size
       const K4 = F(720, 697, 183);
       let K1, K2;
 
-      // chips
       const chips = [...rootEl.querySelectorAll('.st-chip')];
       if (!portrait) {
         const D = Math.max(44, 116 * c);
@@ -144,12 +146,10 @@ export default function Story() {
           el.style.top = `${ut + cp.at[1] * c + dy}px`;
         });
         K1 = U(720, 1012, 466); K1.y += dy;
-        // benefits
         setv('--rt', Math.max(48, 96 * c)); setv('--rh', Math.max(14, 25 * c)); setv('--rp', Math.max(11, 16.5 * c));
         setv('--rg', Math.max(14, 40 * c)); setv('--rw', `${Math.max(200, 330 * c)}px`);
         E.rows.style.cssText = `left:${ul + 915 * c}px;right:auto;top:50%;transform:translateY(-44%)`;
         K2 = U(465, 640, 300);
-        // cta
         setv('--th', Math.max(17, 34 * c)); setv('--tf', Math.max(12, 16 * c)); setv('--tb', Math.max(16, 30 * c));
         E.cta.style.top = `${ut + 150 * c}px`;
       } else {
@@ -172,7 +172,7 @@ export default function Story() {
         setv('--th', Math.min(Math.max(16, 0.052 * vw), 34)); setv('--tf', 14); setv('--tb', 20);
         E.cta.style.top = `${Math.max(navBottom + 16, 0.13 * vh)}px`;
       }
-      // wooden tray under the pack in scene 2 (stands in for the hand)
+      // stone tray under the pack in scene 2
       const trW = K2.w * 1.75, trH = trW * 0.2;
       S.tray = { x: K2.x - trW / 2, top: K2.y - trH * 0.42, w: trW };
       E.tray.style.width = `${trW}px`; E.tray.style.height = `${trH}px`;
@@ -206,12 +206,13 @@ export default function Story() {
       E.jar.style.transform = `translate3d(${x - S.W / 2}px, ${y - S.W * S.R + intro}px, 0) scale(${w / S.W})`;
       const hero = val(S.hero, t);
       const sc = val(S.scene, t);
+      // light grade: in the sunlit lake and the warm room the pack takes on the scene's light
       const g = Math.round(Math.max(hero, sc * 0.85) * 100) / 100;
       if (g !== S.grade) {
         S.grade = g;
         const sh = 1 - g;
-        E.jar.style.filter = `sepia(${0.22 * g}) saturate(${1 - 0.2 * g}) contrast(${1 - 0.1 * g}) brightness(${1 + 0.02 * g}) drop-shadow(0 ${18 * sh + 3 * g}px ${24 * sh + 6 * g}px rgba(27,31,26,${0.18 * sh + 0.4 * g}))`;
-        E.mist.style.opacity = hero;
+        E.jar.style.filter = `sepia(${0.1 * g}) saturate(${1 + 0.04 * g}) contrast(${1 + 0.02 * g}) brightness(${1 + 0.05 * g}) drop-shadow(0 0 ${10 * g}px rgba(255,214,140,${0.35 * g})) drop-shadow(0 ${18 * sh + 3 * g}px ${24 * sh + 6 * g}px rgba(27,31,26,${0.18 * sh + 0.35 * g}))`;
+        E.veil.style.opacity = hero;
       }
       E.hero.style.opacity = hero;
       E.heroFrame.style.transform = `translate3d(0, ${intro}px, 0) scale(${1 + (1 - hero) * 0.06})`;
@@ -220,9 +221,8 @@ export default function Story() {
       const tr = S.tray;
       E.tray.style.transform = `translate3d(${tr.x - out * (tr.x + 1.05 * tr.w)}px, ${tr.top + (1 - bene) * S.vh}px, 0)`;
       E.rows.style.opacity = val(S.rows, t);
-      const scene = val(S.scene, t);
-      E.scene.style.transform = `translate3d(0, ${(1 - scene) * 100}%, 0)`;
-      const dark = scene > 0.96;
+      E.scene.style.transform = `translate3d(0, ${(1 - sc) * 100}%, 0)`;
+      const dark = sc > 0.96;
       if (dark !== S.dark) {
         S.dark = dark;
         if (dark) rootEl.setAttribute('data-theme', 'dark'); else rootEl.removeAttribute('data-theme');
@@ -242,7 +242,7 @@ export default function Story() {
       S.timers.forEach(clearTimeout); S.timers = [];
       const K = S.K;
       if (instant) {
-        const k = K[n === 3 ? 3 : n];
+        const k = K[n];
         snap(S.jx, k.x); snap(S.jy, k.y); snap(S.jw, k.w);
         snap(S.hero, n === 0 ? 1 : 0); snap(S.bene, n >= 2 ? 1 : 0); snap(S.out, n === 3 ? 1 : 0);
         snap(S.rows, n === 2 ? 1 : 0); snap(S.scene, n === 3 ? 1 : 0);
@@ -291,7 +291,6 @@ export default function Story() {
       lastWheel = t; prevD = d;
       if (fresh) { acc = 0; needFresh = false; }
       const down = d > 0;
-      // after the last scene, a fresh downward gesture scrolls the page as usual
       if (down && S.state >= 3 && t > lockUntil && !needFresh) return;
       if (!down && S.state <= 0) return;
       e.preventDefault(); e.stopImmediatePropagation();
@@ -342,7 +341,8 @@ export default function Story() {
     raf = requestAnimationFrame(render);
 
     // ---------------- water loop ----------------
-    let vids = [E.vidA, E.vidB], cur = 0, fading = false, waterTimer = 0;
+    const vids = [E.vidA, E.vidB];
+    let cur = 0, fading = false, waterTimer = 0;
     const heroShown = () => S.state === 0 || val(S.hero) > 0.01;
     const playFrom0 = (v) => { try { v.currentTime = 0; } catch {} return v.play().catch(() => {}); };
     const startWater = () => {
@@ -361,7 +361,7 @@ export default function Story() {
         setTimeout(() => { a.pause(); a.style.transition = 'none'; a.style.opacity = 0; a.style.zIndex = 1; cur = 1 - cur; fading = false; }, 650);
       }
     };
-    if (!reduce && E.vidA && E.vidB) { startWater(); waterTimer = setInterval(waterTick, 100); }
+    if (!reduce && vids[0] && vids[1]) { startWater(); waterTimer = setInterval(waterTick, 100); }
 
     return () => {
       clearInterval(waterTimer);
@@ -391,20 +391,24 @@ export default function Story() {
 
   return (
     <section className="story" id="top" ref={root} data-state="0" aria-label="Litpax lithium battery">
-      {/* 0 · hero */}
+      {/* 0 · hero: sunlit misty lake */}
       <div className="st-layer st-hero" ref={reg('hero')}>
         <div className="st-frame" ref={reg('heroFrame')}>
-          {/* drawn fallback, only shown if the lake photo can't load */}
           <div className="st-fallback">
             <div className="st-haze" />
-            <i className="st-mist m1" /><i className="st-mist m2" /><i className="st-mist m3" />
             <div className="st-plinth" />
           </div>
           <img className="st-lake" src={LAKE} alt="" draggable="false" decoding="async" fetchpriority="high"
             onError={() => root.current?.classList.add('no-lake')} />
-          <span className="st-contact" aria-hidden="true" />
           <video className="st-water" ref={reg('vidA')} src={WATER} muted playsInline preload="auto" aria-hidden="true" />
           <video className="st-water" ref={reg('vidB')} src={WATER} muted playsInline preload="auto" aria-hidden="true" />
+          {/* premium light: low sun, rays through the mist, glints on the water */}
+          <span className="st-sun" aria-hidden="true" />
+          <span className="st-rays" aria-hidden="true"><i /><i /><i /><i /><i /></span>
+          <span className="st-glints" aria-hidden="true">
+            {GLINTS.map((gl, i) => <i key={i} style={{ '--x': gl.x, '--y': gl.y, '--w': gl.w, '--d': `${gl.d}s`, '--o': `${-gl.o}s` }} />)}
+          </span>
+          <span className="st-contact" aria-hidden="true" />
         </div>
         <h1 className="st-mark" ref={reg('mark')} aria-label="Litpax lithium batteries">LITPAX</h1>
         <p className="st-cue" aria-hidden="true">Scroll to explore <span>↓</span></p>
@@ -435,13 +439,11 @@ export default function Story() {
         </div>
       </div>
 
-      {/* 3 · dark stage with the pedestal and the live 3D model */}
+      {/* 3 · warm room with the wooden pedestal and the live 3D model */}
       <div className="st-layer st-scene" ref={reg('scene')}>
         <div className="st-frame">
           <div className="st-fallback">
             <div className="st-room" />
-            <div className="st-beam" />
-            <div className="st-table" />
             <div className="st-ped" />
           </div>
           <img className="st-room-img" src={ROOM} alt="" draggable="false" decoding="async" loading="lazy"
@@ -463,7 +465,7 @@ export default function Story() {
 
       <div className="st-tray" ref={reg('tray')} aria-hidden="true" />
       <img className="st-jar" ref={reg('jar')} src={jarSrc || undefined} alt="Litpax 60V 32Ah lithium battery" draggable="false" />
-      <div className="st-veil" ref={reg('mist')} aria-hidden="true" />
+      <div className="st-veil" ref={reg('veil')} aria-hidden="true" />
     </section>
   );
 }

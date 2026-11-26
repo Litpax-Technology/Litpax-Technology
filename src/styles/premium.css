@@ -6,7 +6,7 @@
   --sans:'Outfit',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
   --serif:'Playfair Display',Georgia,serif;
   --ink:#1B1F1A;
-  --bg:#F4F5F0; --bg-2:#E9EBE3; --tint:#E9EBE3; --paper:#FBFCF8;
+  --bg:#FCFCF9; --bg-2:#F3F4EE; --tint:#F3F4EE; --paper:#FFFFFF;
   --text:#1B1F1A; --mute:#6B7066; --dim:#9EA398;
   --line:rgba(27,31,26,.10); --line-2:rgba(27,31,26,.16);
   --accent:#F3C623;
@@ -32,3 +32,11 @@ h2 mark,.cta-t mark,.it{font-family:var(--serif);font-style:italic;font-weight:4
 @media (prefers-reduced-motion:reduce){
   .js h2.rv,.js .sx-lead.rv,.js .cta-t.rv{filter:none}
 }
+
+/* ---------- premium polish across the site ---------- */
+html,body{background:#FCFCF9}
+::selection{background:#F3C623;color:#1B1F1A}
+.btn,.hd-cta,.rw-cta,.lu-btn{will-change:transform}
+.card,.fig,.ex-card,.cert,.rv-card{transition:transform .6s cubic-bezier(.16,1,.3,1),box-shadow .6s cubic-bezier(.16,1,.3,1)}
+.sx-l{color:#9A7400}
+.sx-n{background:#F3C623;color:#1B1F1A;box-shadow:0 8px 18px -10px rgba(243,198,35,.9)}

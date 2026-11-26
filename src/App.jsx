@@ -6,9 +6,12 @@ import 'lenis/dist/lenis.css';
 
 import Header from './components/Header.jsx';
 import Story from './components/Story.jsx';
+import HeroChooser from './components/HeroChooser.jsx';
+// preview: open the site with ?hero=chooser to see the battery-chooser hero instead of the story
+const CHOOSER = typeof location !== 'undefined' && new URLSearchParams(location.search).get('hero') === 'chooser';
 import { About, Applications, Brands, Certifications, Cta, Process, Reviews, Ticker } from './components/Sections.jsx';
 import PackTour from './components/PackTour.jsx';
-import Lineup from './components/Lineup.jsx';
+import Runway from './components/Runway.jsx';
 import Products from './components/Products.jsx';
 import BatteryFinder from './components/BatteryFinder.jsx';
 import Why from './components/Why.jsx';
@@ -102,11 +105,11 @@ export default function App() {
     <div ref={root}>
       <Header />
       <main>
-        <Story />
+        {CHOOSER ? <HeroChooser /> : <Story />}
         <Ticker />
         <Brands />
         <About />
-        <Lineup onOpen={setQuick} />
+        <Runway onOpen={setQuick} />
         <PackTour />
         <Applications onPick={setFilter} />
         <Products filter={filter} setFilter={setFilter} onOpen={setQuick} />
