@@ -2,6 +2,38 @@
 // and returns an object URL of a transparent PNG. Results are cached per src.
 // The floor shadow is kept as a soft, semi-transparent shadow.
 const cache = new Map();
+const cropCache = new Map();
+
+// Same cut-out, cropped tight to the product (the soft floor shadow is left out),
+// so the bottom-centre of the image is the bottom-centre of the product.
+// Resolves to { url, w, h }.
+export function cutoutCropped(src) {
+  if (cropCache.has(src)) return cropCache.get(src);
+  const job = cutout(src).then(async (url) => {
+    const img = new Image();
+    img.src = url;
+    await img.decode();
+    const W = img.naturalWidth, H = img.naturalHeight;
+    const c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    const x = c.getContext('2d', { willReadFrequently: true });
+    x.drawImage(img, 0, 0);
+    const d = x.getImageData(0, 0, W, H).data;
+    let x0 = W, y0 = H, x1 = 0, y1 = 0;
+    for (let y = 0; y < H; y++) for (let i = 0; i < W; i++) {
+      if (d[(y * W + i) * 4 + 3] > 200) { if (i < x0) x0 = i; if (i > x1) x1 = i; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+    }
+    if (x1 <= x0 || y1 <= y0) return { url, w: W, h: H };
+    const w = x1 - x0 + 1, h = y1 - y0 + 1;
+    const o = document.createElement('canvas');
+    o.width = w; o.height = h;
+    o.getContext('2d').drawImage(img, x0, y0, w, h, 0, 0, w, h);
+    const blob = await new Promise((r) => o.toBlob(r, 'image/png'));
+    return { url: URL.createObjectURL(blob), w, h };
+  });
+  cropCache.set(src, job);
+  return job;
+}
 
 export function cutout(src) {
   if (cache.has(src)) return cache.get(src);

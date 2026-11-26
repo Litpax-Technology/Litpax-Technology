@@ -5,7 +5,7 @@ import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 
 import Header from './components/Header.jsx';
-import Hero from './components/Hero.jsx';
+import Story from './components/Story.jsx';
 import { About, Applications, Brands, Certifications, Cta, Process, Reviews, Ticker } from './components/Sections.jsx';
 import PackTour from './components/PackTour.jsx';
 import Lineup from './components/Lineup.jsx';
@@ -102,7 +102,7 @@ export default function App() {
     <div ref={root}>
       <Header />
       <main>
-        <Hero />
+        <Story />
         <Ticker />
         <Brands />
         <About />

@@ -1,26 +1,33 @@
 /* =====================================================================
-   SITE-WIDE PREMIUM LAYER — the hero's language on every section:
-   Instrument Sans everywhere, highlighted words in Instrument Serif
-   italic, titles blur in, graphite radial gradients on the dark bands.
+   SITE-WIDE LAYER — calm, warm and premium: cream surfaces, deep brown
+   ink, a honey accent; Playfair Display for headings, Outfit for text.
    ===================================================================== */
-:root{--sans:'Instrument Sans','Plus Jakarta Sans',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;--serif:'Instrument Serif',Georgia,serif}
-body{letter-spacing:-.005em}
-h1,h2{font-weight:500;letter-spacing:-.05em;line-height:1}
-h3,h4{font-weight:600;letter-spacing:-.03em}
-h2 mark,.cta-t mark,.it{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.025em;padding-right:.06em}
+:root{
+  --sans:'Outfit',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --serif:'Playfair Display',Georgia,serif;
+  --ink:#1B1F1A;
+  --bg:#F4F5F0; --bg-2:#E9EBE3; --tint:#E9EBE3; --paper:#FBFCF8;
+  --text:#1B1F1A; --mute:#6B7066; --dim:#9EA398;
+  --line:rgba(27,31,26,.10); --line-2:rgba(27,31,26,.16);
+  --accent:#F3C623;
+}
+[data-theme="dark"]{--bg:#1B1F1A;--bg-2:#262B25;--tint:#333830;--paper:#262B25;--text:#F4F5F0;--mute:#C9CCC2;--dim:#9EA398;--y:#E5BC2A}
+html,body{background:var(--bg)}
+body{letter-spacing:.005em;-webkit-font-smoothing:antialiased}
+h1,h2{font-family:var(--serif);font-weight:400;letter-spacing:-.01em;line-height:1.08}
+h3,h4{font-family:var(--serif);font-weight:500;letter-spacing:0}
+h2 mark,.cta-t mark,.it{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.01em;padding-right:.06em}
 .it{color:inherit}
-.btn{font-weight:600;letter-spacing:-.01em}
-.sx-l{font-weight:600}
+.btn{font-weight:500;letter-spacing:.02em}
+.sx-l{font-weight:500;letter-spacing:.16em}
 
 /* titles and leads blur in as they arrive */
 .js h2.rv,.js .sx-lead.rv,.js .cta-t.rv{filter:blur(12px);transition:opacity .9s var(--ease),transform 1.1s var(--ease),filter 1s var(--ease)}
 .js h2.rv.in,.js .sx-lead.rv.in,.js .cta-t.rv.in{filter:none}
 
-/* dealer band + footer card: the hero's graphite radial gradient */
-.cta .wrap{background:radial-gradient(ellipse 90% 130% at 50% 100%,#A1A1AA 0%,#71717A 32%,#3F3F46 64%,#27272A 100%);animation:none}
-.cta-t{font-weight:500;letter-spacing:-.055em}
-.f-cta{background:radial-gradient(ellipse 80% 160% at 85% 120%,#71717A 0%,#3F3F46 45%,#27272A 100%)}
-.f-cta h3{font-weight:500;letter-spacing:-.04em}
+/* dealer band + footer card: warm dark */
+.cta-t{font-weight:400;letter-spacing:-.02em}
+.f-cta h3{font-weight:400;letter-spacing:-.01em}
 
 @media (prefers-reduced-motion:reduce){
   .js h2.rv,.js .sx-lead.rv,.js .cta-t.rv{filter:none}
