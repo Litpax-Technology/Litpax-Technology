@@ -14,7 +14,9 @@ const LID_RATIO = 0.243;          // yellow lid share of the front photo's heigh
 // Optional hooks for the hero: onProgress(0..1) while loading, onReady(ok) once the first
 // frame is drawn (or loading failed), onFrame(canvas) right after every render, so the
 // frame can be copied before the browser clears the WebGL buffer.
-export default function Battery3D({ fallback, alt, active = 0, onProgress, onReady, onFrame }) {
+// look: 'studio' (glow rings, sparks) or 'room' — placed on a real photo: no rings or sparks,
+// warm light from the right like the photo's sun beam, and a real contact shadow.
+export default function Battery3D({ fallback, alt, active = 0, onProgress, onReady, onFrame, look = 'studio' }) {
   const cb = useRef({});
   cb.current = { onProgress, onReady, onFrame };
   const host = useRef(null);
@@ -63,7 +65,18 @@ export default function Battery3D({ fallback, alt, active = 0, onProgress, onRea
         const rim = new THREE.DirectionalLight('#ff9a6b', 1.5); rim.position.set(4, 1.5, -3); scene.add(rim);
         const back = new THREE.DirectionalLight('#ffd9c2', 1.0); back.position.set(-3, 2, -4); scene.add(back);
         const fill = new THREE.DirectionalLight('#ffffff', 0.7); fill.position.set(4, 0.5, 2); scene.add(fill);
-        scene.add(new THREE.AmbientLight('#ffffff', 0.25));
+        const ambient = new THREE.AmbientLight('#ffffff', 0.25);
+        scene.add(ambient);
+        const room = look === 'room';
+        if (room) {
+          key.position.set(4.5, 4, 2.5); key.color.set('#ffd3a1'); key.intensity = 2.6;
+          rim.position.set(-4, 2, -2.5); rim.color.set('#ff9d62'); rim.intensity = 0.6;
+          back.color.set('#ffb77a'); back.intensity = 0.5;
+          fill.position.set(-3, 1, 3); fill.color.set('#ffe2c2'); fill.intensity = 0.35;
+          ambient.color.set('#ffd9b3'); ambient.intensity = 0.2;
+          renderer.toneMappingExposure = 0.92;
+          scene.environmentIntensity = 0.55;
+        }
 
         // ---------- textures ----------
         const aniso = renderer.capabilities.getMaxAnisotropy();
@@ -181,7 +194,7 @@ export default function Battery3D({ fallback, alt, active = 0, onProgress, onRea
         inv.group.position.y = floorBase + (inv.H / 2 + 0.025) * BASE_SCALE[1];
 
         // floor that only shows the real shadow
-        const floor = new THREE.Mesh(new THREE.CircleGeometry(2.3, 64), new THREE.ShadowMaterial({ opacity: 0.1 }));
+        const floor = new THREE.Mesh(new THREE.CircleGeometry(2.3, 64), new THREE.ShadowMaterial({ opacity: look === 'room' ? 0.42 : 0.1 }));
         floor.rotation.x = -Math.PI / 2; floor.position.y = group.position.y - H / 2 - 0.005; floor.receiveShadow = true;
         scene.add(floor);
 
@@ -208,6 +221,7 @@ export default function Battery3D({ fallback, alt, active = 0, onProgress, onRea
         const sparksGeo = new THREE.BufferGeometry(); sparksGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
         const sparks = new THREE.Points(sparksGeo, new THREE.PointsMaterial({ size: 0.09, map: sparkTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.85 }));
         scene.add(sparks);
+        if (room) { ring.visible = false; ring2.visible = false; sparks.visible = false; }
         const floorY = floor.position.y;
         const updateSparks = (dt) => {
           for (let i = 0; i < N; i++) {
@@ -229,6 +243,7 @@ export default function Battery3D({ fallback, alt, active = 0, onProgress, onRea
         const shadow = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 3.0), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false }));
         shadow.rotation.x = -Math.PI / 2; shadow.position.y = group.position.y - H / 2 - 0.01;
         scene.add(shadow);
+        if (room) { shadow.material.opacity = 0.85; shadow.scale.set(0.8, 1, 0.8); }
 
         // ---------- sizing ----------
         const size = () => {
@@ -265,7 +280,7 @@ export default function Battery3D({ fallback, alt, active = 0, onProgress, onRea
           if (drag === null) { ry += AUTO + vel; vel *= 0.94; }    // after a flick it keeps spinning, then settles into the slow turn
           tilt += (tiltT - tilt) * 0.05;
           holder.rotation.set(tilt, ry, 0);
-          holder.position.y = Math.sin(t * 1.1) * 0.05;
+          holder.position.y = room ? 0 : Math.sin(t * 1.1) * 0.05;   // on a real pedestal it must not hover
           // model switch: shrink + spin out, swap, pop back in
           if (phase === 'idle' && target.current !== cur) { phase = 'out'; tp = 0; vel += 0.12; }
           if (phase !== 'idle') {
@@ -277,7 +292,7 @@ export default function Battery3D({ fallback, alt, active = 0, onProgress, onRea
               else phase = 'idle';
             }
           }
-          shadow.scale.setScalar(1 - Math.sin(t * 1.1) * 0.04);
+          if (!room) shadow.scale.setScalar(1 - Math.sin(t * 1.1) * 0.04);
           // two energy rings pulse outwards one after the other
           [ring, ring2].forEach((r, i) => { const p = ((t * 0.35) + i * 0.5) % 1; r.scale.setScalar(0.6 + p * 0.9); r.material.opacity = 0.6 * (1 - p); });
           updateSparks(dt);

@@ -447,7 +447,7 @@ export default function Story() {
           <img className="st-room-img" src={ROOM} alt="" draggable="false" decoding="async" loading="lazy"
             onError={() => root.current?.classList.add('no-room')} />
           <div className="st-3d">
-            <Battery3D active={model} fallback={HERO_LINEUP.front} alt={`Litpax ${MODELS[model].toLowerCase()}, 3D model — drag to rotate`} />
+            <Battery3D look="room" active={model} fallback={HERO_LINEUP.front} alt={`Litpax ${MODELS[model].toLowerCase()}, 3D model — drag to rotate`} />
           </div>
         </div>
         <div className="st-cta" ref={reg('cta')}>
