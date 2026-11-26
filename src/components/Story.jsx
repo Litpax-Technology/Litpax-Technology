@@ -42,6 +42,11 @@ const ROWS = [
 ];
 const MODELS = ['Battery', 'Inverter'];
 
+// hero plate: misty lake with a dark basalt rock (from the HIVEN brief), plus a
+// pixel-aligned water video that loops by crossfading two copies
+const LAKE = 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261123_060932_bb1e06e4-8bd5-45a0-b4a4-24854cffb528.png&w=2048&q=85';
+const WATER = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20261123_070127_46bf2fe6-4037-462d-aa6a-55d52b357a2d.mp4';
+
 // ---- curves (cubic-bezier) ----
 function bezier(x1, y1, x2, y2) {
   const cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx;
@@ -326,7 +331,30 @@ export default function Story() {
     io.observe(rootEl);
     raf = requestAnimationFrame(render);
 
+    // ---------------- water loop ----------------
+    let vids = [E.vidA, E.vidB], cur = 0, fading = false, waterTimer = 0;
+    const heroShown = () => S.state === 0 || val(S.hero) > 0.01;
+    const playFrom0 = (v) => { try { v.currentTime = 0; } catch {} return v.play().catch(() => {}); };
+    const startWater = () => {
+      const a = vids[cur];
+      a.style.zIndex = 1; a.style.transition = 'none';
+      playFrom0(a).then(() => { a.style.opacity = 1; });
+    };
+    const waterTick = () => {
+      const a = vids[cur], b = vids[1 - cur];
+      if (!heroShown() || document.hidden) { a.pause(); b.pause(); fading = false; return; }
+      if (a.paused && !fading) a.play().catch(() => {});
+      if (!fading && a.duration && a.currentTime > a.duration - 0.6) {
+        fading = true;
+        b.style.zIndex = 2; b.style.transition = 'opacity .6s linear'; b.style.opacity = 0;
+        playFrom0(b).then(() => { requestAnimationFrame(() => { b.style.opacity = 1; }); });
+        setTimeout(() => { a.pause(); a.style.transition = 'none'; a.style.opacity = 0; a.style.zIndex = 1; cur = 1 - cur; fading = false; }, 650);
+      }
+    };
+    if (!reduce && E.vidA && E.vidB) { startWater(); waterTimer = setInterval(waterTick, 100); }
+
     return () => {
+      clearInterval(waterTimer);
       cancelAnimationFrame(raf); io.disconnect(); S.timers.forEach(clearTimeout);
       removeEventListener('wheel', onWheel, { capture: true });
       removeEventListener('touchstart', onTouchStart); removeEventListener('touchmove', onTouchMove); removeEventListener('touchend', onTouchEnd);
@@ -356,9 +384,16 @@ export default function Story() {
       {/* 0 · hero */}
       <div className="st-layer st-hero" ref={reg('hero')}>
         <div className="st-frame" ref={reg('heroFrame')}>
-          <div className="st-haze" />
-          <i className="st-mist m1" /><i className="st-mist m2" /><i className="st-mist m3" />
-          <div className="st-plinth" />
+          {/* drawn fallback, only shown if the lake photo can't load */}
+          <div className="st-fallback">
+            <div className="st-haze" />
+            <i className="st-mist m1" /><i className="st-mist m2" /><i className="st-mist m3" />
+            <div className="st-plinth" />
+          </div>
+          <img className="st-lake" src={LAKE} alt="" draggable="false" decoding="async" fetchpriority="high"
+            onError={() => root.current?.classList.add('no-lake')} />
+          <video className="st-water" ref={reg('vidA')} src={WATER} muted playsInline preload="auto" aria-hidden="true" />
+          <video className="st-water" ref={reg('vidB')} src={WATER} muted playsInline preload="auto" aria-hidden="true" />
         </div>
         <h1 className="st-mark" ref={reg('mark')} aria-label="Litpax lithium batteries">LITPAX</h1>
         <p className="st-cue" aria-hidden="true">Scroll to explore <span>↓</span></p>

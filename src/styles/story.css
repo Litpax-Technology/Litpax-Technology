@@ -2,12 +2,18 @@
    OPENING STORY — one pack, four scenes (see Story.jsx)
    --s plate unit (cover fit), --c UI unit (contain fit); set by script.
    ===================================================================== */
-.story{position:relative;height:100svh;padding:0;overflow:hidden;background:#F4F5F0;color:var(--ink);user-select:none;-webkit-user-select:none}
+.story{position:relative;height:100svh;padding:0;overflow:hidden;background:#FBF4E9;color:var(--ink);user-select:none;-webkit-user-select:none}
 .st-layer{position:absolute;inset:0}
 .st-frame{position:absolute;left:var(--fl);top:var(--ft);width:calc(1440 * var(--s));height:calc(900 * var(--s));transform-origin:50% 55%;will-change:transform}
 
 /* 0 · hero plate: warm haze, drifting mist, a soft stone plinth */
-.st-hero{z-index:1;background:#F4F5F0;will-change:opacity}
+.st-hero{z-index:1;background:#FBF4E9;will-change:opacity}
+/* lake plate + water video: same framing, the rock centred at frame x 720 */
+.st-lake,.st-water{position:absolute;width:102.78%;left:-.14%;top:-5.22%;height:auto;max-width:none;display:block;pointer-events:none}
+.st-water{aspect-ratio:1168/784;object-fit:cover;opacity:0;z-index:1}
+.st-fallback{display:none}
+.no-lake .st-fallback{display:block}
+.no-lake .st-lake,.no-lake .st-water{display:none}
 .st-haze{position:absolute;inset:0;background:
   radial-gradient(ellipse 60% 45% at 50% 62%,#ECEEE6 0%,rgba(236,238,230,0) 70%),
   linear-gradient(180deg,#F4F5F0 0%,#F1F2EC 52%,#E3E5DC 74%,#D8DBD0 100%)}
@@ -23,8 +29,8 @@
   background:linear-gradient(90deg,#7E8379 0%,#AEB2A6 38%,#979C90 70%,#6F7469 100%)}
 .st-plinth::after{content:"";position:absolute;left:0;right:0;top:0;height:calc(46 * var(--s));border-radius:50%;
   background:radial-gradient(ellipse at 45% 40%,#DCDFD5 0%,#C3C7BA 70%,#A6AA9E 100%);box-shadow:inset 0 -2px 0 rgba(0,0,0,.08)}
-.st-mark{position:absolute;left:0;right:0;margin:0;text-align:center;white-space:nowrap;font-family:var(--serif);font-weight:400;line-height:1;letter-spacing:-.01em;color:#E7E9E1;pointer-events:none}
-.st-cue{position:absolute;left:50%;bottom:calc(28 * var(--c, 1px));transform:translateX(-50%);display:flex;align-items:center;gap:8px;font-size:13px;letter-spacing:.06em;color:#6B7066;transition:opacity .5s}
+.st-mark{position:absolute;left:0;right:0;margin:0;text-align:center;white-space:nowrap;font-family:var(--serif);font-weight:400;line-height:1;letter-spacing:-.01em;color:#EDE3D4;pointer-events:none}
+.st-cue{position:absolute;left:50%;bottom:calc(28 * var(--c, 1px));transform:translateX(-50%);display:flex;align-items:center;gap:8px;font-size:13px;letter-spacing:.06em;color:#7a6a58;transition:opacity .5s}
 .st-cue span{display:inline-block;animation:floatY 1.6s ease-in-out infinite}
 
 /* 1 · ingredients ring */
