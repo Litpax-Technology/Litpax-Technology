@@ -46,6 +46,8 @@ const MODELS = ['Battery', 'Inverter'];
 // pixel-aligned water video that loops by crossfading two copies
 const LAKE = 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261123_060932_bb1e06e4-8bd5-45a0-b4a4-24854cffb528.png&w=2048&q=85';
 const WATER = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20261123_070127_46bf2fe6-4037-462d-aa6a-55d52b357a2d.mp4';
+// final scene: dark terracotta room with a round wooden pedestal (from the same brief)
+const ROOM = 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261123_060933_bddedf90-ba56-477b-9c32-901bc025bdb0.png&w=2048&q=85';
 
 // ---- curves (cubic-bezier) ----
 function bezier(x1, y1, x2, y2) {
@@ -123,9 +125,9 @@ export default function Story() {
       const navBottom = hd ? hd.getBoundingClientRect().bottom - Math.min(0, rootEl.getBoundingClientRect().top) : 80;
       const R = S.R;
 
-      const K0 = F(720, 490, 290);
+      const K0 = F(720, 499, 262);
       if (portrait) K0.w = Math.min(K0.w, 0.48 * vw);
-      rootEl.style.setProperty('--pk', String(K0.w / (290 * s)));   // plinth follows the pack's size
+      rootEl.style.setProperty('--pk', String(K0.w / (262 * s)));   // plinth + contact shadow follow the pack's size
       const K4 = F(720, 697, 183);
       let K1, K2;
 
@@ -203,6 +205,14 @@ export default function Story() {
       const x = val(S.jx, t), y = val(S.jy, t), w = val(S.jw, t);
       E.jar.style.transform = `translate3d(${x - S.W / 2}px, ${y - S.W * S.R + intro}px, 0) scale(${w / S.W})`;
       const hero = val(S.hero, t);
+      const sc = val(S.scene, t);
+      const g = Math.round(Math.max(hero, sc * 0.85) * 100) / 100;
+      if (g !== S.grade) {
+        S.grade = g;
+        const sh = 1 - g;
+        E.jar.style.filter = `sepia(${0.22 * g}) saturate(${1 - 0.2 * g}) contrast(${1 - 0.1 * g}) brightness(${1 + 0.02 * g}) drop-shadow(0 ${18 * sh + 3 * g}px ${24 * sh + 6 * g}px rgba(27,31,26,${0.18 * sh + 0.4 * g}))`;
+        E.mist.style.opacity = hero;
+      }
       E.hero.style.opacity = hero;
       E.heroFrame.style.transform = `translate3d(0, ${intro}px, 0) scale(${1 + (1 - hero) * 0.06})`;
       const bene = val(S.bene, t), out = val(S.out, t);
@@ -392,6 +402,7 @@ export default function Story() {
           </div>
           <img className="st-lake" src={LAKE} alt="" draggable="false" decoding="async" fetchpriority="high"
             onError={() => root.current?.classList.add('no-lake')} />
+          <span className="st-contact" aria-hidden="true" />
           <video className="st-water" ref={reg('vidA')} src={WATER} muted playsInline preload="auto" aria-hidden="true" />
           <video className="st-water" ref={reg('vidB')} src={WATER} muted playsInline preload="auto" aria-hidden="true" />
         </div>
@@ -427,10 +438,14 @@ export default function Story() {
       {/* 3 · dark stage with the pedestal and the live 3D model */}
       <div className="st-layer st-scene" ref={reg('scene')}>
         <div className="st-frame">
-          <div className="st-room" />
-          <div className="st-beam" />
-          <div className="st-table" />
-          <div className="st-ped" />
+          <div className="st-fallback">
+            <div className="st-room" />
+            <div className="st-beam" />
+            <div className="st-table" />
+            <div className="st-ped" />
+          </div>
+          <img className="st-room-img" src={ROOM} alt="" draggable="false" decoding="async" loading="lazy"
+            onError={() => root.current?.classList.add('no-room')} />
           <div className="st-3d">
             <Battery3D active={model} fallback={HERO_LINEUP.front} alt={`Litpax ${MODELS[model].toLowerCase()}, 3D model — drag to rotate`} />
           </div>
@@ -448,6 +463,7 @@ export default function Story() {
 
       <div className="st-tray" ref={reg('tray')} aria-hidden="true" />
       <img className="st-jar" ref={reg('jar')} src={jarSrc || undefined} alt="Litpax 60V 32Ah lithium battery" draggable="false" />
+      <div className="st-veil" ref={reg('mist')} aria-hidden="true" />
     </section>
   );
 }

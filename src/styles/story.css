@@ -99,3 +99,18 @@
 /* WhatsApp bubble waits until you scroll past the story */
 .wa{transition:opacity .4s var(--ease),transform .5s var(--spring)}
 .at-hero .wa{opacity:0;transform:scale(.6);pointer-events:none}
+
+/* ---- the pack in the lake: contact shadow on the rock, haze veil over it ---- */
+.st-contact{position:absolute;left:calc(589 * var(--s));top:calc(486 * var(--s));width:calc(262 * var(--s));height:calc(30 * var(--s));border-radius:50%;
+  background:radial-gradient(closest-side,rgba(20,14,8,.62),rgba(20,14,8,.25) 60%,rgba(20,14,8,0));filter:blur(calc(3 * var(--s)));
+  transform:scale(var(--pk,1),var(--pk,1));transform-origin:50% 50%;pointer-events:none}
+.st-veil{position:absolute;inset:0;z-index:7;pointer-events:none;
+  background:linear-gradient(180deg,rgba(251,244,233,.20) 0%,rgba(251,244,233,.10) 35%,rgba(251,244,233,0) 60%)}
+.no-lake .st-contact{display:none}
+
+/* ---- final scene photo: the room with the wooden pedestal ---- */
+.st-scene{background:#2B1F14}
+.st-room-img{position:absolute;width:100%;left:0;top:-3.75%;height:auto;max-width:none;display:block;pointer-events:none}
+.st-scene .st-fallback{display:none}
+.no-room .st-scene .st-fallback{display:block}
+.no-room .st-room-img{display:none}
