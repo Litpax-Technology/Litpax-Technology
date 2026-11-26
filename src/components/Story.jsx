@@ -411,6 +411,20 @@ export default function Story() {
           <span className="st-contact" aria-hidden="true" />
         </div>
         <h1 className="st-mark" ref={reg('mark')} aria-label="Litpax lithium batteries">LITPAX</h1>
+        <div className="st-copy">
+          <p className="st-kick"><i />ISO 9001:2015 · Made in Sirsa, India</p>
+          <h2 className="st-head">Clean power,<br /><em>built to last.</em></h2>
+          <p className="st-sub">Lithium-ion &amp; LFP battery packs for e-rickshaws, e-bikes, solar and inverters.</p>
+          <div className="st-acts">
+            <a className="st-go" href="#products">Explore batteries <span aria-hidden="true">→</span></a>
+            <a className="st-ghost" href="#dealer">Become a dealer</a>
+          </div>
+        </div>
+        <ul className="st-specs" aria-label="This pack">
+          <li><b>60V · 32Ah</b><span>Lithium-ion pack</span></li>
+          <li><b>Smart BMS</b><span>In every pack</span></li>
+          <li><b>Tested</b><span>Before it leaves our line</span></li>
+        </ul>
         <p className="st-cue" aria-hidden="true">Scroll to explore <span>↓</span></p>
       </div>
 

@@ -70,7 +70,7 @@
 .st-row p{margin-top:.25em;max-width:var(--rw);font-size:var(--rp);line-height:1.45;color:#4C5249}
 
 /* ---------- 3 · warm room ---------- */
-.st-scene{z-index:4;background:#2B1F14;transform:translateY(100%);will-change:transform;color:#F4F5F0}
+.st-scene{z-index:4;overflow:hidden;background:#2B1F14;transform:translateY(100%);will-change:transform;color:#F4F5F0}
 .st-room-img{position:absolute;width:100%;left:0;top:-3.75%;height:auto;max-width:none;display:block;pointer-events:none;filter:brightness(1.08) saturate(1.08)}
 .st-room{position:absolute;inset:0;background:radial-gradient(ellipse 50% 45% at 55% 58%,rgba(243,198,35,.25),rgba(243,198,35,0) 70%),linear-gradient(180deg,#3A281A,#2B1F14)}
 .st-ped{position:absolute;left:calc(585 * var(--s));top:calc(690 * var(--s));width:calc(270 * var(--s));height:calc(70 * var(--s));border-radius:50%;background:linear-gradient(90deg,#5C3A22,#8D6039,#5C3A22)}
@@ -113,3 +113,61 @@
 .st-frame::after{content:"";position:absolute;left:0;right:0;bottom:0;height:14%;pointer-events:none;z-index:2;
   background:linear-gradient(to bottom,rgba(255,248,234,0),rgba(255,248,234,.55) 60%,rgba(255,248,234,.85))}
 @media (max-width:760px){ .st-cue{bottom:64px} }
+
+/* =====================================================================
+   HERO COPY — headline, actions and spec cards on the lake
+   ===================================================================== */
+/* gold wordmark: warm metallic fill that fades into the mist */
+.st-mark{color:transparent;background:linear-gradient(180deg,rgba(201,150,62,.50) 0%,rgba(214,170,92,.30) 45%,rgba(230,196,140,.06) 92%);
+  -webkit-background-clip:text;background-clip:text}
+.st-frame::after{display:none}
+
+.st-copy{position:absolute;z-index:3;left:clamp(24px,4.6vw,88px);bottom:clamp(40px,9vh,96px);max-width:min(520px,34vw);color:#1B1F1A}
+.st-kick{display:flex;align-items:center;gap:10px;margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#7A5A1E}
+.st-kick i{width:28px;height:1px;background:#C9963E}
+.st-head{margin:0;font-family:var(--serif);font-weight:400;font-size:clamp(40px,4.4vw,78px);line-height:1.02;letter-spacing:-.02em;color:#1B1F1A}
+.st-head em{font-style:italic;background:linear-gradient(90deg,#9A6A12,#C9963E 55%,#E0B04A);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.08em}
+.st-sub{margin:18px 0 0;max-width:420px;font-size:clamp(15px,1.05vw,17px);line-height:1.55;color:#4A4234}
+.st-acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.st-go,.st-ghost{display:inline-flex;align-items:center;gap:10px;height:50px;padding:0 26px;border-radius:999px;font-size:15px;font-weight:500;letter-spacing:.02em;text-decoration:none;
+  transition:transform .25s cubic-bezier(.22,1,.36,1),background .3s,box-shadow .3s}
+.st-go{background:#F3C623;color:#1B1F1A;box-shadow:0 14px 30px -14px rgba(201,150,30,.95),inset 0 1px 0 rgba(255,255,255,.5)}
+.st-go span{transition:transform .3s}
+.st-go:hover{background:#FFD84A;transform:translateY(-2px)}
+.st-go:hover span{transform:translateX(4px)}
+.st-ghost{color:#1B1F1A;background:rgba(255,253,246,.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:inset 0 0 0 1px rgba(27,31,26,.18)}
+.st-ghost:hover{background:rgba(255,253,246,.85);transform:translateY(-2px)}
+
+.st-specs{position:absolute;z-index:3;right:clamp(24px,4.6vw,88px);bottom:clamp(40px,9vh,96px);margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.st-specs li{display:flex;flex-direction:column;gap:2px;min-width:210px;padding:14px 20px 14px 22px;border-radius:16px;position:relative;
+  background:linear-gradient(135deg,rgba(255,253,246,.78),rgba(255,248,234,.5));-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);
+  box-shadow:0 18px 40px -26px rgba(74,52,20,.55),inset 0 0 0 1px rgba(255,255,255,.7),0 0 0 1px rgba(150,108,58,.12)}
+.st-specs li::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0;background:#F3C623}
+.st-specs b{font-size:17px;font-weight:600;letter-spacing:.01em;color:#1B1F1A}
+.st-specs span{font-size:13px;color:#6B5A44}
+
+/* entrance: rises in after the pack lands */
+.st-copy>*,.st-specs li{opacity:0;transform:translateY(22px);animation:stRise 1s cubic-bezier(.16,1,.3,1) forwards}
+.st-kick{animation-delay:1.1s!important}.st-head{animation-delay:1.25s!important}.st-sub{animation-delay:1.4s!important}.st-acts{animation-delay:1.55s!important}
+.st-specs li:nth-child(1){animation-delay:1.5s}.st-specs li:nth-child(2){animation-delay:1.65s}.st-specs li:nth-child(3){animation-delay:1.8s}
+@keyframes stRise{to{opacity:1;transform:none}}
+.story-intro .st-copy,.story-intro .st-specs{visibility:hidden}
+.story:not([data-state="0"]) .st-copy,.story:not([data-state="0"]) .st-specs{pointer-events:none}
+
+@media (max-width:1100px){ .st-specs{display:none} .st-copy{max-width:46vw} }
+@media (max-width:760px){
+  .st-copy{left:20px;right:20px;bottom:76px;max-width:none;text-align:center}
+  .st-kick{justify-content:center;font-size:10.5px;letter-spacing:.14em;margin-bottom:12px}
+  .st-kick i{display:none}
+  .st-head{font-size:clamp(34px,9.6vw,44px)}
+  .st-sub{display:none}
+  .st-acts{justify-content:center;margin-top:18px;gap:10px}
+  .st-go,.st-ghost{height:46px;padding:0 20px;font-size:14px}
+  .st-cue{display:none}
+}
+@media (prefers-reduced-motion:reduce){ .st-copy>*,.st-specs li{animation:none;opacity:1;transform:none} }
+/* a soft mist under the copy so it reads on any frame of the water */
+.st-hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:42%;z-index:2;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,248,234,0),rgba(255,248,234,.55) 55%,rgba(255,248,234,.8))}
+@media (min-width:761px){ .st-hero::after{height:38%;background:linear-gradient(180deg,rgba(255,248,234,0),rgba(255,248,234,.35) 60%,rgba(255,248,234,.55))} }
+@media (max-width:760px){ .st-kick{color:#4E3A12;text-shadow:0 0 12px rgba(255,248,234,.9)} .st-hero::after{height:48%;background:linear-gradient(180deg,rgba(255,248,234,0),rgba(255,248,234,.7) 40%,rgba(255,248,234,.85))} }
